@@ -7,7 +7,11 @@
     "dev": "vite",
     "build": "vite build",
     "lint": "eslint .",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "tokens": "docker run --rm -v $(pwd):/src style-dictionary/style-dictionary build --config tokens/config.json",
+    "format:check": "npx prettier --check .",
+    "format:fix": "npx prettier --write .",
+    "format:debug": "npx prettier --debug-check ."
   },
   "dependencies": {
     "react": "^19.2.6",
@@ -23,6 +27,7 @@
     "eslint-plugin-react-hooks": "^7.1.1",
     "eslint-plugin-react-refresh": "^0.5.2",
     "globals": "^17.6.0",
+    "prettier": "3.8.3",
     "vite": "^8.0.12"
   }
 }

@@ -1,4 +1,4 @@
-# Logs
+
 logs
 *.log
 npm-debug.log*
@@ -12,18 +12,26 @@ dist
 dist-ssr
 *.local
 
-# Editor directories and files
-.vscode/*
+.vscode/
 !.vscode/extensions.json
+!.vscode/settings.json
+!.vscode/launch.json
+
 .idea
-.DS_Store
+
 *.suo
 *.ntvs*
 *.njsproj
 *.sln
 *.sw?
 
-#
 .env
-notes.md
+.env*
+!.env.example
+
 .aider*
+notes.md
+todo.md
+
+.DS_Store
+Thumbs.db
