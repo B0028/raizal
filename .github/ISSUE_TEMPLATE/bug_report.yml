@@ -9,4 +9,4 @@ body:
       label: "¿Cómo podemos reproducir el error?"
       placeholder: "1. Ir a /login\n2. Hacer clic en...\n3. Ver el error..."
     validations:
-      required: true
+      required: false

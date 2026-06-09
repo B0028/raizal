@@ -9,4 +9,4 @@ body:
       label: "Detalles de la documentación"
       placeholder: "Falta documentar las variables de entorno..."
     validations:
-      required: true
+      required: false

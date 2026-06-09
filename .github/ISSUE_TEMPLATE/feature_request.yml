@@ -9,4 +9,4 @@ body:
       label: "¿Qué valor aporta esta funcionalidad?"
       placeholder: "Permite al usuario hacer X cosa..."
     validations:
-      required: true
+      required: false
