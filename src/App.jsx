@@ -1,10 +1,11 @@
 import './styles/App.css'
+import {NavigationMenu} from './components/ui/navigation-menu'
 
 function App() {
 
   return (
     <>
-      <h1>dada</h1>
+      <NavigationMenu/>
     </>
   )
 }
