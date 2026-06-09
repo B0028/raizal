@@ -1,6 +1,6 @@
 name: "🐛 Reportar un Bug"
 description: "Informa sobre algo que está roto en la aplicación."
-title: "fix: [Breve descripción del problema]"
+title: "bugfix/[Nombre breve del problema]"
 labels: ["bug"]
 body:
   - type: textarea

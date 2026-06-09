@@ -1,6 +1,6 @@
 name: "📝 Tarea de Documentación"
 description: "Crear o actualizar especificaciones, guías o el README."
-title: "docs: [¿Qué documentación vas a actualizar?]"
+title: "docs/[¿Qué documentación vas a actualizar?]"
 labels: ["documentation"]
 body:
   - type: textarea
