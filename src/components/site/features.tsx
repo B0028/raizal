@@ -14,7 +14,7 @@ const features = [
   {
     icon: Droplets,
     title: 'Máxima eficiencia de recursos',
-    desc: 'Nuestras torres hidropónicas utilizan un sistema NFT de flujo continuo y goteo recirculante, optimizando el uso de agua y nutrientes.',
+    desc: 'Nuestro centro utiliza sistemas de cultivos automatizados que optimizan el uso de agua, nutrientes y espacio.',
   },
   {
     icon: Sun,
@@ -48,7 +48,9 @@ export function Features() {
             Tu huerto vertical, sin esfuerzo
           </h2>
           <p className="mt-4 text-pretty text-muted-foreground">
-            Cada hoja verde que cultivamos está respaldada por métricas ambientales rigurosas, asegurando un uso óptimo del agua y la energía, mientras se fortalece la seguridad alimentaria local.
+            Cada hoja verde que cultivamos está respaldada por métricas
+            ambientales rigurosas, asegurando un uso óptimo del agua y la
+            energía, mientras se fortalece la seguridad alimentaria local.
           </p>
         </div>
 
