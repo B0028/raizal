@@ -2,7 +2,7 @@ import { Routes, Route, Navigate, useLocation } from "react-router-dom"
 import { useEffect } from "react"
 import { Suspense } from "react";
 
-import { SiteLayout } from "@/components/site/site-layout"
+import { SiteLayout } from "@/components/layouts/site-layout"
 import HomePage from "@/pages/home"
 import AboutPage from "@/pages/about"
 import FaqPage from "@/pages/faq"
