@@ -1,7 +1,10 @@
-import AppRoutes from "./routes/AppRoutes";
+import AppRoutes from './routes/AppRoutes';
+import { TooltipProvider } from "@/components/ui/tooltip"
 
 export default function App() {
-  return <AppRoutes />;
+  return (
+  <TooltipProvider>
+    <AppRoutes />
+  </TooltipProvider>
+)
 }
-
-
