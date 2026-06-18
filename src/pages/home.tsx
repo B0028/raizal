@@ -1,4 +1,4 @@
-import { Hero } from "@/components/site/hero"
+import { ProductIntro } from "@/components/site/product-intro"
 import { Features } from "@/components/site/features"
 import { HowItWorks } from "@/components/site/how-it-works"
 import { Membership } from "@/components/site/membership"
@@ -8,7 +8,7 @@ import { HydroLoader } from "@/components/ui/loader"
 export default function HomePage() {
   return (
     <>
-      <Hero />
+      <ProductIntro />
       <Features />
       <HowItWorks />
       <Membership />
