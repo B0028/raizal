@@ -1,22 +1,22 @@
-import { Routes, Route, Navigate, useLocation } from "react-router-dom"
-import { useEffect } from "react"
-import { Suspense } from "react";
+import { Routes, Route, Navigate, useLocation } from 'react-router-dom';
+import { useEffect } from 'react';
+import { Suspense } from 'react';
 
-import { SiteLayout } from "@/components/layouts/site-layout"
-import HomePage from "@/pages/home"
-import AboutPage from "@/pages/about"
-import FaqPage from "@/pages/faq"
-import ContactPage from "@/pages/contact"
-import LoginPage from "@/pages/login"
-import RegisterPage from "@/pages/register"
-import { DashboardPage } from "@/pages/dashboard"
+import { SiteLayout } from '@/components/layouts/site-layout';
+import HomePage from '@/pages/home';
+import AboutPage from '@/pages/about';
+import FaqPage from '@/pages/faq';
+import ContactPage from '@/pages/contact';
+import LoginPage from '@/pages/login';
+import RegisterPage from '@/pages/register';
+import { DashboardPage } from '@/pages/dashboard';
 
 function ScrollToTop() {
-  const { pathname } = useLocation()
+  const { pathname } = useLocation();
   useEffect(() => {
-    window.scrollTo(0, 0)
-  }, [pathname])
-  return null
+    window.scrollTo(0, 0);
+  }, [pathname]);
+  return null;
 }
 
 export default function AppRoutes() {
@@ -24,9 +24,10 @@ export default function AppRoutes() {
     <>
       <ScrollToTop />
       <Routes>
-
-         {/* Sitio público */}
-        <Route element={<SiteLayout />}> {/* Cambiar el elemento futuramente por <PublicLayout /> */}
+        {/* Sitio público */}
+        <Route element={<SiteLayout />}>
+          {' '}
+          {/* Cambiar el elemento futuramente por <PublicLayout /> */}
           <Route path="/" element={<HomePage />} />
           <Route path="/nosotros" element={<AboutPage />} />
           <Route path="/faq" element={<FaqPage />} />
@@ -53,8 +54,6 @@ export default function AppRoutes() {
           <Route path="/perfil" element={<ProfilePage />} />
         </Route>
         */}
-
-
       </Routes>
     </>
   );
@@ -63,4 +62,3 @@ export default function AppRoutes() {
 //para componente que se muestre mientras carga si es que se usa lazy loading
 //<Suspense fallback={<div>Cargando...</div>}>
 //</Suspense>
-
