@@ -1,30 +1,62 @@
-import { Link } from "react-router-dom"
-import { Button } from "@/components/ui/button"
+import { Link } from 'react-router-dom';
+import { ArrowRight, Sprout, Activity } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import StatusIndicator from "@/components/ui/status-indicator";
 
 export function ProductIntro() {
   return (
-    <section className="relative overflow-hidden">
-      <div className="mx-auto grid max-w-7xl items-center gap-12 px-4 py-20 sm:px-6 lg:grid-cols-2 lg:gap-8 lg:py-28 lg:px-8">
+    <section className="relative overflow-hidden w-full border-t border-border/60">
+      <div className="mx-auto grid max-w-7xl items-center gap-12 px-4 py-20 sm:px-6 lg:grid-cols-2 lg:gap-8 lg:py-28 lg:px-8 pointer-events-none">
         <div className="relative z-10">
+          <span className="inline-flex items-center gap-2 rounded-full border border-primary/30 bg-primary/10 px-3 py-1 text-xs font-medium text-primary">
+            <Sprout className="h-3.5 w-3.5" />
+            Código abierto
+          </span>
           <h1 className="mt-6 text-pretty text-4xl font-extrabold leading-[1.05] tracking-tight text-foreground sm:text-5xl lg:text-6xl">
-            RAIZAL
-          </h1>
+            El Datacenter de Alimentos{' '} <span className="text-primary">que nutre tu comunidad.</span></h1>
           <p className="mt-6 max-w-md text-pretty text-base leading-relaxed text-muted-foreground sm:text-lg">
-            Raizal une tecnología y naturaleza en una torre de cultivo vertical
-            inteligente. Siembra, monitorea y cosecha alimentos desde tu casa y nosotros nos encargamos.
+            Sé parte del datacenter de alimentos que está transformando la
+            agricultura urbana. Reserva tu espacio de cultivo inteligente,
+            monitorea tus plantas en tiempo real desde nuestra app y redefine tu
+            forma de consumir.{' '}
+            <b>Tecnología, ecología y comunidad cultivando el futuro.</b>
           </p>
-          <div className="mt-8 flex flex-col gap-3 sm:flex-row">
-            <Button asChild size="lg">
+            <div className="mt-8 flex flex-col gap-3 sm:flex-row">
+            <Button asChild size="lg" className="pointer-events-auto flex flex-col-2">
+              <ArrowRight className="h-4 w-4" />
+                Comienza a cultivar
               <Link to="/registro">
-                Comienza tu huerto
               </Link>
             </Button>
-            <Button asChild size="lg" variant="outline">
+            <Button
+              asChild
+              size="lg"
+              variant="outline"
+              className="pointer-events-auto flex flex-col-2"
+            >
               <Link to="/dashboard">
-                Panel en vivo
+                <StatusIndicator state="active" size="sm" label="Demo en vivo" />
               </Link>
             </Button>
           </div>
+
+          <dl className="mt-12 grid max-w-auto grid-cols-4 gap-6">
+            {[
+              { value: '95%', label: 'Menos agua' },
+              { value: '3x', label: 'Más rápido' },
+              { value: '0', label: 'Pesticidas' },
+              { value: '100%', label: 'Más ecológico' },
+            ].map((stat) => (
+              <div key={stat.label}>
+                <dt className="text-2xl font-bold text-foreground sm:text-3xl">
+                  {stat.value}
+                </dt>
+                <dd className="mt-1 text-xs md:text-md lg:text-lg text-muted-foreground">
+                  {stat.label}
+                </dd>
+              </div>
+            ))}
+          </dl>
         </div>
 
         <div className="relative">
@@ -38,5 +70,5 @@ export function ProductIntro() {
         </div>
       </div>
     </section>
-  )
+  );
 }
