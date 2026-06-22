@@ -39,7 +39,7 @@ export function Navbar() {
         </nav>
 
         <div className="hidden items-center gap-2 md:flex">
-          <Button asChild variant="ghost" size="sm">
+          <Button asChild size="sm" variant="outline">
             <Link to="/ingresar">Ingresar</Link>
           </Button>
           <Button asChild size="sm">
