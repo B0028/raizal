@@ -49,18 +49,14 @@ export function SignUpForm({ className, ...props }: React.ComponentPropsWithoutR
       const { data: authData, error: signUpError } = await supabase.auth.signUp({
         email,
         password,
+        options: {
+          data: {
+            username,
+          },
+        },
       })
 
       if (signUpError) throw signUpError
-
-      if (authData.user) {
-        const { error: profileError } = await supabase
-          .from('profiles')
-          .update({ username })
-          .eq('id', authData.user.id)
-
-        if (profileError) throw profileError
-      }
 
       setSuccess(true)
     } catch (error: unknown) {

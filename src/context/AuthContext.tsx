@@ -7,52 +7,25 @@ const supabase = createClient()
 export interface UserProfile {
 	id: string
 	username?: string
-	full_name?: string
 	avatar_url?: string
-	created_at?: string
-	updated_at?: string
+	full_name?: string
 }
 
 const AuthContext = createContext<{
 	user: User | null
-	profile: UserProfile | null
 	loading: boolean
 	logout: () => Promise<void>
 } | null>(null);
 
 export const AuthContextProvider = ({ children }: { children: React.ReactNode }) => {
 	const [user, setUser] = useState<User | null>(null);
-	const [profile, setProfile] = useState<UserProfile | null>(null);
 	const [loading, setLoading] = useState(true);
-
-	const fetchProfile = async (userId: string) => {
-		try {
-			const { data, error } = await supabase
-				.from('profiles')
-				.select('*')
-				.eq('id', userId)
-				.single()
-
-			if (error) {
-				console.error('Error fetching profile:', error)
-				return null
-			}
-			return data as UserProfile
-		} catch (error) {
-			console.error('Error fetching profile:', error)
-			return null
-		}
-	}
 
 	useEffect(() => {
 		const getInitialUser = async () => {
 			try {
 				const { data: { user } } = await supabase.auth.getUser()
 				setUser(user)
-				if (user) {
-					const userProfile = await fetchProfile(user.id)
-					setProfile(userProfile)
-				}
 			} finally {
 				setLoading(false)
 			}
@@ -61,14 +34,7 @@ export const AuthContextProvider = ({ children }: { children: React.ReactNode })
 		getInitialUser()
 
 		const { data: { subscription } } = supabase.auth.onAuthStateChange(async (_event, session) => {
-			const currentUser = session?.user ?? null
-			setUser(currentUser)
-			if (currentUser) {
-				const userProfile = await fetchProfile(currentUser.id)
-				setProfile(userProfile)
-			} else {
-				setProfile(null)
-			}
+			setUser(session?.user ?? null)
 		})
 
 		return () => {
@@ -79,11 +45,10 @@ export const AuthContextProvider = ({ children }: { children: React.ReactNode })
 	const logout = async () => {
 		await supabase.auth.signOut()
 		setUser(null)
-		setProfile(null)
 	}
 
 	return (
-		<AuthContext.Provider value={{ user, profile, loading, logout }}>
+		<AuthContext.Provider value={{ user, loading, logout }}>
 			{children}
 		</AuthContext.Provider>
 	)
@@ -95,5 +60,18 @@ export const useAuth = () => {
 		throw new Error('useAuth must be used within AuthContextProvider')
 	}
 	return context
+}
+
+// Hook para obtener los datos del usuario desde user_metadata
+export const useUserProfile = (): UserProfile | null => {
+	const { user } = useAuth()
+	if (!user) return null
+
+	return {
+		id: user.id,
+		username: user.user_metadata?.username,
+		avatar_url: user.user_metadata?.avatar_url || user.user_metadata?.picture,
+		full_name: user.user_metadata?.full_name,
+	}
 }
 

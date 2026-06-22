@@ -1,7 +1,8 @@
 import { Bell, Search, LogOut, User } from "lucide-react"
 import { useNavigate } from 'react-router-dom'
-import { useAuth } from '@/context/AuthContext'
+import { useAuth, useUserProfile } from '@/context/AuthContext'
 import { Button } from '@/components/ui/button'
+import { UserAvatar } from '@/components/common/user-avatar'
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -11,7 +12,8 @@ import {
 } from '@/components/ui/dropdown-menu'
 
 export function DashboardTopbar() {
-  const { user, profile, logout } = useAuth()
+  const { user, logout } = useAuth()
+  const profile = useUserProfile()
   const navigate = useNavigate()
 
   const handleLogout = async () => {
@@ -40,11 +42,14 @@ export function DashboardTopbar() {
             <Button
               variant="ghost"
               size="sm"
-              className="flex items-center gap-2"
+              className="flex items-center gap-2 h-auto p-1"
             >
-              <div className="size-8 rounded-full bg-primary flex items-center justify-center text-primary-foreground text-sm font-semibold">
-                {user?.email?.[0].toUpperCase()}
-              </div>
+              <UserAvatar
+                avatarUrl={profile?.avatar_url}
+                username={profile?.username}
+                email={user?.email}
+                size="sm"
+              />
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end" className="w-48">
