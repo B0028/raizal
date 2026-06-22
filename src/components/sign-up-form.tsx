@@ -12,9 +12,11 @@ import {
 } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
+import { OAuthButtons } from '@/components/auth/oauth-buttons'
 
 export function SignUpForm({ className, ...props }: React.ComponentPropsWithoutRef<'div'>) {
   const [email, setEmail] = useState('')
+  const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [repeatPassword, setRepeatPassword] = useState('')
   const [error, setError] = useState<string | null>(null)
@@ -27,20 +29,42 @@ export function SignUpForm({ className, ...props }: React.ComponentPropsWithoutR
     setError(null)
 
     if (password !== repeatPassword) {
-      setError('Passwords do not match')
+      setError('Las contraseñas no coinciden')
       return
     }
+
+    if (password.length < 6) {
+      setError('La contraseña debe tener al menos 6 caracteres')
+      return
+    }
+
+    if (!username.trim()) {
+      setError('El nombre de usuario es requerido')
+      return
+    }
+
     setIsLoading(true)
 
     try {
-      const { error } = await supabase.auth.signUp({
+      const { data: authData, error: signUpError } = await supabase.auth.signUp({
         email,
         password,
       })
-      if (error) throw error
+
+      if (signUpError) throw signUpError
+
+      if (authData.user) {
+        const { error: profileError } = await supabase
+          .from('profiles')
+          .update({ username })
+          .eq('id', authData.user.id)
+
+        if (profileError) throw profileError
+      }
+
       setSuccess(true)
     } catch (error: unknown) {
-      setError(error instanceof Error ? error.message : 'An error occurred')
+      setError(error instanceof Error ? error.message : 'Ocurrió un error')
     } finally {
       setIsLoading(false)
     }
@@ -69,6 +93,17 @@ export function SignUpForm({ className, ...props }: React.ComponentPropsWithoutR
           <CardContent>
             <form onSubmit={handleSignUp}>
               <div className="flex flex-col gap-6">
+                <div className="grid gap-2">
+                  <Label htmlFor="username">Nombre de usuario</Label>
+                  <Input
+                    id="username"
+                    type="text"
+                    placeholder="tu_usuario"
+                    required
+                    value={username}
+                    onChange={(e) => setUsername(e.target.value)}
+                  />
+                </div>
                 <div className="grid gap-2">
                   <Label htmlFor="email">Email</Label>
                   <Input
@@ -116,6 +151,7 @@ export function SignUpForm({ className, ...props }: React.ComponentPropsWithoutR
                 </a>
               </div>
             </form>
+            <OAuthButtons />
           </CardContent>
         </Card>
       )}

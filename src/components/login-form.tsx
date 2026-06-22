@@ -12,6 +12,7 @@ import {
 } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
+import { OAuthButtons } from '@/components/auth/oauth-buttons'
 
 export function LoginForm({ className, ...props }: React.ComponentPropsWithoutRef<'div'>) {
   const [email, setEmail] = useState('')
@@ -91,6 +92,7 @@ export function LoginForm({ className, ...props }: React.ComponentPropsWithoutRe
               </a>
             </div>
           </form>
+          <OAuthButtons />
         </CardContent>
       </Card>
     </div>

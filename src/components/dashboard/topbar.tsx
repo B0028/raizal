@@ -11,7 +11,7 @@ import {
 } from '@/components/ui/dropdown-menu'
 
 export function DashboardTopbar() {
-  const { user, logout } = useAuth()
+  const { user, profile, logout } = useAuth()
   const navigate = useNavigate()
 
   const handleLogout = async () => {
@@ -50,8 +50,13 @@ export function DashboardTopbar() {
           <DropdownMenuContent align="end" className="w-48">
             <div className="px-2 py-1.5 text-sm">
               <p className="font-medium text-foreground truncate">
-                {user?.email}
+                {profile?.username || user?.email}
               </p>
+              {profile?.full_name && (
+                <p className="text-xs text-muted-foreground truncate">
+                  {profile.full_name}
+                </p>
+              )}
             </div>
             <DropdownMenuSeparator />
             <DropdownMenuItem className="cursor-pointer gap-2">
