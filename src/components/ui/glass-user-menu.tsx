@@ -1,0 +1,197 @@
+import { useEffect, useMemo, useRef, useState } from 'react'
+import { AnimatePresence } from 'framer-motion'
+import { CreditCard, Gear, SignOut, User } from '@phosphor-icons/react'
+
+export type GlassUserMenuUser = {
+  name: string
+  email: string
+  avatar: string
+}
+
+type MenuItemDef = {
+  icon: typeof User
+  label: string
+  color: string
+}
+
+type MenuGroupDef = {
+  label: string
+  items: MenuItemDef[]
+}
+
+const MENU_GROUPS: MenuGroupDef[] = [
+  {
+    items: [
+      { icon: User, label: 'Perfil', color: '#3A86FF' },
+      { icon: Gear, label: 'Ajustes', color: '#B388FF' },
+      { icon: CreditCard, label: 'Membresías', color: '#FFBE0B' },
+    ],
+  },
+]
+
+function MenuItem({
+  icon: Icon,
+  label,
+  color,
+  onClick,
+}: {
+  icon: typeof User
+  label: string
+  color: string
+  onClick: () => void
+}) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      className="flex w-full items-center gap-2.5 rounded-xl px-3 py-2.5 text-left"
+      style={{ minHeight: 44, background: 'transparent' }}
+    >
+      <div
+        className="flex shrink-0 items-center justify-center rounded-xl"
+        style={{
+          width: 32,
+          height: 32,
+          background: `${color}18`,
+          border: `1px solid ${color}22`,
+        }}
+      >
+        <Icon size={16} weight="regular" style={{ color }} />
+      </div>
+      <span className="text-sm font-medium" style={{ color: 'rgba(255,255,255,0.75)' }}>
+        {label}
+      </span>
+    </button>
+  )
+}
+
+function LogOutItem({ onClick }: { onClick: () => void }) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      className="flex w-full items-center gap-2.5 rounded-xl px-3 py-2.5 text-left"
+      style={{ minHeight: 44, background: 'transparent' }}
+    >
+      <div
+        className="flex shrink-0 items-center justify-center rounded-xl"
+        style={{
+          width: 32,
+          height: 32,
+          background: '#FF5A5A18',
+          border: '1px solid #FF5A5A22',
+        }}
+      >
+        <SignOut size={16} weight="regular" style={{ color: '#FF5A5A' }} />
+      </div>
+      <span className="text-sm font-medium" style={{ color: 'rgba(255,90,90,0.8)' }}>
+        Cerrar sesión
+      </span>
+    </button>
+  )
+}
+
+export default function GlassUserMenu({
+  user,
+  onLogout,
+}: {
+  user: GlassUserMenuUser
+  onLogout?: () => void
+}) {
+  const [open, setOpen] = useState(false)
+  const ref = useRef<HTMLDivElement | null>(null)
+
+  useEffect(() => {
+    if (!open) return
+
+    const handler = (e: MouseEvent | TouchEvent) => {
+      if (ref.current && !ref.current.contains(e.target as Node)) setOpen(false)
+    }
+
+    document.addEventListener('mousedown', handler)
+    document.addEventListener('touchstart', handler)
+
+    return () => {
+      document.removeEventListener('mousedown', handler)
+      document.removeEventListener('touchstart', handler)
+    }
+  }, [open])
+
+  const glassStyle = useMemo(
+    () => ({
+      background: 'rgba(255, 255, 255, 0.08)',
+      border: '1px solid rgba(255, 255, 255, 0.12)',
+      boxShadow: '0 20px 40px 0 oklch(0.15 0.03 140 / 0.55)',
+      backdropFilter: 'blur(10px) saturate(1.8)',
+      WebkitBackdropFilter: 'blur(10px) saturate(1.8)',
+    }),
+    [],
+  )
+
+  const glassPanelBlur = useMemo(
+    () => ({
+      backdropFilter: 'blur(10px) saturate(1.8)',
+      WebkitBackdropFilter: 'blur(10px) saturate(1.8)',
+    }),
+    [],
+  )
+
+  return (
+    <div ref={ref} className="relative flex items-center">
+      <button
+        type="button"
+        onClick={() => setOpen((v) => !v)}
+        aria-label="User menu"
+        className="flex items-center gap-2 rounded-full border border-border bg-foreground/5 px-3 py-1.5 transition-colors hover:bg-foreground/10"
+        style={{ boxShadow: open ? '0 0 0 1px rgba(255,255,255,0.25), 0 8px 30px rgba(0,0,0,0.35)' : undefined }}
+      >
+        <div className="pointer-events-none absolute inset-0 z-[-1] rounded-full glass"  />
+        <img src={user.avatar} alt={user.name} className="h-8 w-8 shrink-0 rounded-full object-cover" />
+        <span className="text-sm font-semibold text-white/80">{user.name}</span>
+        <span className="text-white/40">▾</span>
+      </button>
+
+      <AnimatePresence>
+        {open && (
+          <div
+            className="absolute right-0 top-full mt-2 w-[min(280px,calc(100vw-32px))] rounded-2xl p-2 glass-strong"
+          >
+            <div
+              className="absolute bottom-6 left-0 top-6 w-[1px]"
+            />
+
+            {MENU_GROUPS.map((group) => (
+              <div key={group.label} className="mb-1">
+                <p className="mb-0.5 px-3 pt-1 text-[10px] font-semibold uppercase tracking-widest text-white/25">
+                  {group.label}
+                </p>
+                {group.items.map((item) => (
+                  <MenuItem
+                    key={item.label}
+                    icon={item.icon}
+                    label={item.label}
+                    color={item.color}
+                    onClick={() => {
+                      // TODO: hook actions if needed
+                      setOpen(false)
+                    }}
+                  />
+                ))}
+              </div>
+            ))}
+
+            <div className="mx-2 my-1.5 h-[1px]" style={{ background: 'rgba(255,255,255,0.07)' }} />
+
+            <LogOutItem
+              onClick={() => {
+                setOpen(false)
+                onLogout?.()
+              }}
+            />
+          </div>
+        )}
+      </AnimatePresence>
+    </div>
+  )
+}
+
