@@ -30,7 +30,7 @@ export type CropSlot = {
   progress: number;
   daysToHarvest: number;
   health: SensorStatus;
-  image: string;
+  image: string | null;
 };
 
 export type ActivityEvent = {
