@@ -1,12 +1,11 @@
 import { useLiveSensors } from '@/hooks/use-live-sensors';
-import { cropSlots as initialCropSlots, memberPlan } from '@/lib/dashboard-data';
 import { statusColor, statusLabel } from '@/lib/sensor-types';
 import { Sprout, Plus, SquarePen, SquareCheckBig, Undo, CircleX, Clock9 } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import { SensorSection } from '@/components/dashboard/crop-sensor';
 import { CropSelectModal } from '@/components/dashboard/crop-select-modal';
 import type { Plants } from '@/lib/plants-data';
-import type { CropSlot } from '@/lib/dashboard-data';
+import type { CropSlot } from '@/lib/sensor-types';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { cn } from '@/lib/utils';
@@ -25,6 +24,8 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip"
+import { useUserSubscription } from '@/hooks/use-user-subscription';
+import { useCropSlots } from '@/hooks/use-crop-slots';
 
 // Calcula el tiempo restante hasta las 09:00 del día siguiente
 function timeUntilNextNine(): string {
@@ -47,9 +48,15 @@ function isPast9am(): boolean {
 
 export function CropSlots() {
   const { metrics, history } = useLiveSensors();
+  const { slotsTotal, slotsUsed, loading: subscriptionLoading } = useUserSubscription();
+  const {
+    slots: activeSlots,
+    loading: slotsLoading,
+    addSlots,
+    updateSlots,
+    removeSlot,
+  } = useCropSlots();
 
-  // Por defecto vacío — TODO: cargar desde DB con useSWR('/api/crop-slots')
-  const [activeSlots, setActiveSlots] = useState<CropSlot[]>([]);
   // Copia de trabajo durante el modo edición
   const [draftSlots, setDraftSlots] = useState<CropSlot[]>([]);
 
@@ -58,6 +65,7 @@ export function CropSlots() {
   const [openSlot, setOpenSlot] = useState<string | null>(null);
   const [time, setTime] = useState(timeUntilNextNine());
   const [pastNine, setPastNine] = useState(isPast9am());
+  const [isSaving, setIsSaving] = useState(false);
 
   // Actualiza el cronómetro cada segundo
   useEffect(() => {
@@ -70,24 +78,35 @@ export function CropSlots() {
 
   // Slots mostrados: draft en modo edición, activos fuera
   const displayedSlots = editMode ? draftSlots : activeSlots;
-  const slotsUsed = displayedSlots.length;
-  const emptySlots = memberPlan.slotsTotal - slotsUsed;
+  const currentSlotsUsed = displayedSlots.length;
+  const emptySlots = Math.max(0, slotsTotal - currentSlotsUsed);
 
-  function handleConfirmFromModal(selected: Plants[]) {
-    // TODO: persistir en DB vía POST /api/crop-slots
-    const newSlots: CropSlot[] = selected.map((p, i) => ({
-      id: `new-${Date.now()}-${i}`,
-      name: p.nombre,
-      variety: p.familia ?? p.tipo_de_planta,
-      image: p.imagen,
-      health: 'optimal' as const,
-      progress: 0,
-      daysToHarvest: 0,
-      rack: '—',
-      level: 0,
-    }));
-    setActiveSlots((prev) => [...prev, ...newSlots]);
-    setOpenSlot(null);
+  const isLoading = subscriptionLoading || slotsLoading;
+
+  async function handleConfirmFromModal(selected: Plants[]) {
+    if (isLoading || isSaving) return;
+
+    setIsSaving(true);
+    try {
+      const slotsToAdd = selected.map((p) => ({
+        plant_name: p.nombre,
+        plant_variety: p.familia ?? p.tipo_de_planta,
+        plant_image: p.imagen,
+        health: 'optimal' as const,
+        progress: 0,
+        days_to_harvest: 0,
+        rack: '—',
+        level: 0,
+      }));
+
+      await addSlots(slotsToAdd);
+      setOpenSlot(null);
+    } catch (error) {
+      console.error('Error adding slots:', error);
+      alert('Error al agregar los cultivos. Por favor intenta de nuevo.');
+    } finally {
+      setIsSaving(false);
+    }
   }
 
   function enterEditMode() {
@@ -100,15 +119,24 @@ export function CropSlots() {
     setEditMode(false);
   }
 
-  function removeSlot(id: string) {
+  function removeSlotFromDraft(id: string) {
     setDraftSlots((prev) => prev.filter((s) => s.id !== id));
   }
 
-  function confirmEdit() {
-    // TODO: persistir cambios en DB
-    setActiveSlots([...draftSlots]);
-    setEditMode(false);
-    setConfirmDialogOpen(false);
+  async function confirmEdit() {
+    if (isLoading || isSaving) return;
+
+    setIsSaving(true);
+    try {
+      await updateSlots(draftSlots);
+      setEditMode(false);
+      setConfirmDialogOpen(false);
+    } catch (error) {
+      console.error('Error updating slots:', error);
+      alert('Error al guardar los cambios. Por favor intenta de nuevo.');
+    } finally {
+      setIsSaving(false);
+    }
   }
 
   return (
@@ -121,14 +149,14 @@ export function CropSlots() {
             <h2 className="font-heading text-base font-semibold">Mis slots de cultivo</h2>
             <Tooltip>
               <TooltipTrigger render={
-                <Badge 
-                variant="outline" 
+                <Badge
+                variant="outline"
                 className="font-mono text-xs text-muted-foreground">
-                {slotsUsed}/{memberPlan.slotsTotal} cultivos 
-                </Badge>} 
+                {currentSlotsUsed}/{slotsTotal} cultivos
+                </Badge>}
               />
               <TooltipContent>
-                <p>Tienes {memberPlan.slotsTotal - slotsUsed} espacio{memberPlan.slotsTotal - slotsUsed > 1 ? "s" : "" } disponible{memberPlan.slotsTotal - slotsUsed > 1 ? "s" : "" } para cultivar</p>
+                <p>Tienes {slotsTotal - currentSlotsUsed} espacio{slotsTotal - currentSlotsUsed > 1 ? "s" : "" } disponible{slotsTotal - currentSlotsUsed > 1 ? "s" : "" } para cultivar</p>
               </TooltipContent>
             </Tooltip>
             
@@ -193,7 +221,7 @@ export function CropSlots() {
                 {/* Botón eliminar — solo en modo edición */}
                 {editMode && (
                   <button
-                    onClick={() => removeSlot(crop.id)}
+                    onClick={() => removeSlotFromDraft(crop.id)}
                     className="absolute right-2 top-2 z-10 text-destructive/70 hover:text-destructive transition-color cursor-pointer"
                     aria-label="Eliminar slot"
                   >
@@ -295,8 +323,8 @@ export function CropSlots() {
         <CropSelectModal
           open={openSlot !== null}
           onClose={() => setOpenSlot(null)}
-          slotsUsed={slotsUsed}
-          slotsTotal={memberPlan.slotsTotal}
+          slotsUsed={currentSlotsUsed}
+          slotsTotal={slotsTotal}
           onConfirm={handleConfirmFromModal}
         />
       )}
@@ -311,10 +339,12 @@ export function CropSlots() {
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel onClick={() => setConfirmDialogOpen(false)}>
+            <AlertDialogCancel onClick={() => setConfirmDialogOpen(false)} disabled={isSaving}>
               Cancelar
             </AlertDialogCancel>
-            <AlertDialogAction onClick={confirmEdit}>Confirmar</AlertDialogAction>
+            <AlertDialogAction onClick={confirmEdit} disabled={isSaving}>
+              {isSaving ? 'Guardando...' : 'Confirmar'}
+            </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
