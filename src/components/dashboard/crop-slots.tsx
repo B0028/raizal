@@ -209,83 +209,109 @@ export function CropSlots() {
         </div>
 
         {/* Grid de cards */}
-        <div className="mt-5 grid grid-cols-2 gap-4 xs:grid-cols-2 sm:grid-cols-3 md:grid-cols-4 xl:grid-cols-6">
+        <div className="mt-5 grid grid-cols-2 gap-3 xs:grid-cols-2 sm:grid-cols-3 md:grid-cols-4 xl:grid-cols-6">
           {displayedSlots.map((crop) => {
-            const color = statusColor[crop.health];
-            // Una card "pendiente" es la que aún no pasó las 9am (recién agregada)
             const isPending = !pastNine && crop.progress === 0 && crop.daysToHarvest === 0;
 
             return (
               <div
                 key={crop.id}
-                className="glass-panel glass-shadow group flex flex-col gap-3 rounded-2xl p-3 transition-colors hover:bg-foreground/[0.07] relative"
+                className="glass-panel glass-shadow group flex flex-col rounded-2xl overflow-hidden transition-transform hover:-translate-y-0.5"
               >
-                {/* Botón eliminar — solo en modo edición */}
-                {editMode && (
-                  <button
-                    onClick={() => removeSlotFromDraft(crop.id)}
-                    className="absolute right-2 top-2 z-10 text-destructive/70 hover:text-destructive transition-color cursor-pointer"
-                    aria-label="Eliminar slot"
-                  >
-                    <CircleX className="size-7" />
-                  </button>
-                )}
+                {/* Mitad superior: imagen full-bleed con texto encima */}
+                <div className="relative h-44 shrink-0 overflow-hidden bg-foreground/10">
+                  <img
+                    src={crop.image || '/placeholder.png'}
+                    alt={crop.name}
+                    className="absolute inset-0 size-full object-cover transition-transform duration-500 group-hover:scale-105"
+                    onError={(e) => {
+                      (e.target as HTMLImageElement).src = '/placeholder.png';
+                    }}
+                  />
 
-                {/* Imagen */}
-                <div className="flex min-w-0 flex-1 flex-col w-[100]">
-                  <div className="relative bg-popover rounded-2xl h-[100] overflow-hidden">
-                    <img
-                      src={crop.image || '/placeholder.svg'}
-                      alt={crop.name}
-                      className="size-full object-cover transition-transform duration-500"
-                    />
-                  </div>
-                </div>
+                  {/* Gradiente oscuro para legibilidad */}
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/30 to-black/40" />
 
-                {/* Info */}
-                <div className="flex min-w-0 flex-col gap-2">
-                  <div className="min-w-0">
-                    <p className="truncate text-sm font-semibold">{crop.name}</p>
-                    <p className="truncate font-mono text-[10px] italic text-muted-foreground">
-                      {crop.variety}
-                    </p>
-                  </div>
+                  {/* Botón eliminar — modo edición */}
+                  {editMode && (
+                    <button
+                      onClick={() => removeSlotFromDraft(crop.id)}
+                      className="absolute right-2 top-2 z-10 text-white/70 hover:text-white transition-colors cursor-pointer"
+                      aria-label="Eliminar slot"
+                    >
+                      <CircleX className="size-6" />
+                    </button>
+                  )}
+
+                  {/* Fila superior: etiqueta del slot */}
+                  {!editMode && (
+                    <div className="absolute top-3 left-3 right-3 flex items-center justify-between">
+                      <span className="font-mono text-[9px] tracking-widest uppercase text-white/60">
+                        {crop.rack !== '—' ? crop.rack : 'cultivo activo'}
+                      </span>
+                      {!isPending && (
+                        <span className="font-mono text-[9px] tracking-widest uppercase text-white/60">
+                          cosecha en
+                        </span>
+                      )}
+                    </div>
+                  )}
 
                   {isPending ? (
-                    /* Modo pendiente: cronómetro hasta las 9am */
-                    <div className="flex items-center gap-1.5">
+                    /* Estado pendiente */
+                    <div className="absolute bottom-3 left-3 right-3 flex items-center gap-1.5">
                       <Clock9 className="size-3 text-amber-400 shrink-0" />
-                      <span className="font-mono text-[10px] text-amber-400">Esperando para sembrar {time}</span>
+                      <span className="font-mono text-[10px] text-amber-400">Sembrando a las 09:00</span>
                     </div>
                   ) : (
-                    /* Modo activo: barra de progreso + rack */
-                    <>
-                      <div>
-                        <div className="flex items-center justify-between text-[10px]">
-                          <span className="text-muted-foreground">Crecimiento</span>
-                          <span className="font-mono font-medium">{crop.progress}%</span>
-                        </div>
-                        <div className="mt-1 h-1.5 w-full overflow-hidden rounded-2xl bg-foreground/10">
-                          <div
-                            className="h-full rounded-2xl bg-gradient-to-r from-emerald-300 to-emerald-700 transition-all animate-pulse"
-                            style={{ width: `${crop.progress}%` }}
-                          />
-                        </div>
-                        <p className="mt-1 font-mono text-[9px] text-muted-foreground">
-                          Cosecha en {crop.daysToHarvest}{' '}
+                    /* Nombre + días en fila inferior de la imagen */
+                    <div className="absolute bottom-3 left-3 right-3 flex items-end justify-between gap-2">
+                      <div className="min-w-0">
+                        <p className="font-heading text-base font-bold text-white leading-tight truncate">
+                          {crop.name}
+                        </p>
+                        {crop.variety && (
+                          <p className="font-mono text-[9px] italic text-white/55 truncate">
+                            {crop.variety}
+                          </p>
+                        )}
+                      </div>
+                      <div className="text-right shrink-0">
+                        <p className="font-heading text-3xl font-bold text-white leading-none">
+                          {crop.daysToHarvest}
+                        </p>
+                        <p className="font-mono text-[9px] uppercase text-white/55 leading-tight">
                           {crop.daysToHarvest === 1 ? 'día' : 'días'}
                         </p>
                       </div>
+                    </div>
+                  )}
 
-                      {/* Sensores */}
-                      <div className="grid gap-3">
-                        {metrics.map((metric) =>
-                          metric.key !== 'nitrates' && metric.key !== 'oxygen' ? (
-                            <SensorSection key={metric.key} metric={metric} history={history} />
-                          ) : null,
-                        )}
-                      </div>
-                    </>
+                  {/* Barra de progreso al borde inferior de la imagen */}
+                  {!isPending && (
+                    <div className="absolute bottom-0 left-0 right-0 h-[3px] bg-black/40">
+                      <div
+                        className="h-full bg-gradient-to-r from-emerald-400 to-emerald-600 transition-all"
+                        style={{ width: `${crop.progress}%` }}
+                      />
+                    </div>
+                  )}
+                </div>
+
+                {/* Mitad inferior: sensores */}
+                <div className="flex flex-col gap-2 p-3">
+                  {isPending ? (
+                    <p className="font-mono text-[10px] text-muted-foreground text-center py-2">
+                      {time} para la siembra
+                    </p>
+                  ) : (
+                    <div className="grid gap-2">
+                      {metrics.map((metric) =>
+                        metric.key !== 'nitrates' && metric.key !== 'oxygen' ? (
+                          <SensorSection key={metric.key} metric={metric} history={history} />
+                        ) : null,
+                      )}
+                    </div>
                   )}
                 </div>
               </div>
@@ -298,20 +324,20 @@ export function CropSlots() {
             return (
               <div
                 key={slotId}
-                className="glass-panel glass-shadow group relative flex rounded-2xl opacity-50"
+                className="glass-panel glass-shadow group relative flex rounded-2xl min-h-48 opacity-40"
               >
                 <button
                   onClick={() => !editMode && setOpenSlot(slotId)}
                   disabled={editMode}
                   className={cn(
-                    'flex flex-1 flex-col items-center justify-center gap-2 rounded-2xl border border-dashed border-muted-foreground/30 p-3 transition-colors',
-                    !editMode && 'hover:bg-foreground/[0.07] cursor-pointer',
+                    'flex flex-1 flex-col items-center justify-center gap-2 rounded-2xl border border-dashed border-muted-foreground/30 p-4 transition-colors',
+                    !editMode && 'hover:bg-foreground/[0.07] hover:opacity-100 cursor-pointer',
                     editMode && 'cursor-not-allowed',
                   )}
                 >
-                  <Plus className="size-6 text-muted-foreground/40" />
-                  <span className="font-mono text-[10px] text-muted-foreground">
-                    [ selecciona tu cultivo ]
+                  <Plus className="size-5 text-muted-foreground/50" />
+                  <span className="font-mono text-[10px] text-muted-foreground text-center leading-relaxed">
+                    [ selecciona<br />tu cultivo ]
                   </span>
                 </button>
               </div>
