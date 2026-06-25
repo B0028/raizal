@@ -92,7 +92,7 @@ export const memberPlan = {
 };
 
 export const resourceStats = [
-  { label: 'Agua ahorrada vs. cultivo tradicional', value: 92, suffix: '%' },
-  { label: 'Kilómetros de transporte evitados', value: 340, suffix: 'km' },
-  { label: 'Energía renovable utilizada', value: 78, suffix: '%' },
+  { label: 'Agua ahorrada vs. cultivo tradicional', value: 92, suffix: '%' , type:"water"},
+  { label: 'Kilómetros de transporte evitados', value: 340, suffix: 'km', type:"transport"},
+  { label: 'Energía renovable utilizada', value: 78, suffix: '%' , type:"energy"},
 ];
