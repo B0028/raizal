@@ -1,8 +1,7 @@
 import { createContext, useContext, useEffect, useState } from "react";
-import { createClient } from '@/lib/client'
+import { supabase } from '@/lib/client'
 import type { User } from '@supabase/supabase-js'
 
-const supabase = createClient()
 
 export interface UserProfile {
 	id: string

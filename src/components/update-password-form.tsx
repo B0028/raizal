@@ -1,7 +1,7 @@
 import { useState } from 'react'
 
 import { cn } from '@/lib/utils'
-import { createClient } from '@/lib/client'
+import { supabase } from '@/lib/client'
 import { Button } from '@/components/ui/button'
 import {
   Card,
@@ -21,7 +21,6 @@ export function UpdatePasswordForm({ className, ...props }: React.ComponentProps
   const [success, setSuccess] = useState(false)
 
   const handleUpdatePassword = async (e: React.FormEvent) => {
-    const supabase = createClient()
     e.preventDefault()
     setError(null)
 

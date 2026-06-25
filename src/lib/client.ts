@@ -1,8 +1,6 @@
-import { createBrowserClient } from '@supabase/ssr'
+import { createClient as createSupabaseClient } from '@supabase/supabase-js'
 
-export function createClient() {
-  return createBrowserClient(
-    import.meta.env.VITE_SUPABASE_URL!,
-    import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY!
-  )
-}
+const supabaseUrl = import.meta.env.VITE_SUPABASE_URL!
+const supabasePublishableKey = import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY!
+
+export const supabase = createSupabaseClient(supabaseUrl, supabasePublishableKey)

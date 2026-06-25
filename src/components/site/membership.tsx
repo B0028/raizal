@@ -1,12 +1,15 @@
-import { Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { Check } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
+import { useAuth } from '@/context/AuthContext';
+import { supabase } from '@/lib/client';
 
 const plans = [
   {
     name: 'Semilla (Básico)',
-    price: '$15',
+    planNameDb: 'Básico',
+    price: 600,
     period: '/mes',
     desc: 'Para probar el servicio y conocer tu cosecha.',
     features: [
@@ -21,7 +24,8 @@ const plans = [
   },
   {
     name: 'Cosecha (Intermedio)',
-    price: '$25',
+    planNameDb: 'Intermedio',
+    price: 1000,
     period: '/mes',
     desc: 'Para quienes quieren cultivar más.',
     features: [
@@ -36,7 +40,8 @@ const plans = [
   },
   {
     name: 'Huerto (Premium)',
-    price: '$40',
+    planNameDb: 'Premium',
+    price: 1600,
     period: '/mes',
     desc: 'Para familias y pequeños negocios sostenibles.',
     features: [
@@ -54,11 +59,50 @@ const plans = [
 ];
 
 export function Membership() {
+  const navigate = useNavigate();
+  const { user } = useAuth();
+
+  const handleSubscribe = async (planNameDb: string, priceUyu: number) => {
+    if (!user) {
+      navigate('/ingresar');
+      return;
+    }
+
+    try {
+      const { data: { session } } = await supabase.auth.getSession();
+      const token = session?.access_token;
+
+      if (!token) {
+        alert('Sesión inválida. Por favor, vuelve a iniciar sesión.');
+        return;
+      }
+      
+      const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:3000';
+
+      const response = await fetch(`${apiUrl}/api/subscriptions/checkout`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`,
+        },
+        body: JSON.stringify({ planNameDb, priceUyu }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || 'Error al procesar en el servidor');
+      }
+
+      alert(data.message);
+    } catch (error: any) {
+      console.error('Error en el proceso:', error);
+      alert(error.message || 'Ocurrió un error inesperado al procesar la suscripción.');
+    }
+  };
+
   return (
-    <section
-      id="membresia"
-      className="border-t border-border/60 border-b bg-card/20"
-    >
+    <section id="membresia" className="border-t border-border/60 border-b bg-card/20">
       <div className="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:py-24 lg:px-8">
         <div className="mx-auto max-w-2xl text-center">
           <span className="text-sm font-semibold text-primary">
@@ -78,9 +122,7 @@ export function Membership() {
               key={plan.name}
               className={cn(
                 'relative flex flex-col rounded-2xl border bg-background/40 p-7 backdrop-blur-sm',
-                plan.featured
-                  ? 'border-primary/60 ring-1 ring-primary/30'
-                  : 'border-border/60',
+                plan.featured ? 'border-primary/60 ring-1 ring-primary/30' : 'border-border/60',
               )}
             >
               {plan.featured && (
@@ -88,35 +130,26 @@ export function Membership() {
                   Más popular
                 </span>
               )}
-              <h3 className="text-lg font-semibold text-foreground">
-                {plan.name}
-              </h3>
+              <h3 className="text-lg font-semibold text-foreground">{plan.name}</h3>
               <p className="mt-2 text-sm text-muted-foreground">{plan.desc}</p>
               <div className="mt-5 flex items-baseline gap-1">
-                <span className="text-4xl font-bold text-foreground">
-                  {plan.price}
-                </span>
-                <span className="text-sm text-muted-foreground">
-                  {plan.period}
-                </span>
+                <span className="text-4xl font-bold text-foreground">${plan.price}</span>
+                <span className="text-sm text-muted-foreground">{plan.period}</span>
               </div>
               <ul className="mt-6 flex flex-1 flex-col gap-3">
                 {plan.features.map((f) => (
-                  <li
-                    key={f}
-                    className="flex items-start gap-2.5 text-sm text-muted-foreground"
-                  >
+                  <li key={f} className="flex items-start gap-2.5 text-sm text-muted-foreground">
                     <Check className="mt-0.5 h-4 w-4 shrink-0 text-primary" />
                     {f}
                   </li>
                 ))}
               </ul>
               <Button
-                asChild
-                className="mt-7"
+                className="mt-7 cursor-pointer"
                 variant={plan.featured ? 'default' : 'outline'}
+                onClick={() => handleSubscribe(plan.planNameDb, plan.price)}
               >
-                <Link to="/registro">{plan.cta}</Link>
+                {plan.cta}
               </Button>
             </div>
           ))}

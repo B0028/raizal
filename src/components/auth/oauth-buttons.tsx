@@ -1,12 +1,11 @@
 import { useState } from 'react'
 import { Github } from "@/components/icons/github-icon"
 import { Mail } from "@/components/icons/google-icon";
-import { createClient } from '@/lib/client'
+import { supabase } from '@/lib/client'
 import { Button } from '@/components/ui/button'
 
 export function OAuthButtons() {
   const [isLoading, setIsLoading] = useState(false)
-  const supabase = createClient()
 
   const handleOAuth = async (provider: 'google' | 'github') => {
     setIsLoading(true)
