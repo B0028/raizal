@@ -1,7 +1,7 @@
 {
   "mcpServers": {
     "shaders": {
-      "enabled": false
+      "enabled": true
     }
   }
 }
