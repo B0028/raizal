@@ -26,6 +26,7 @@ import {
 } from "@/components/ui/tooltip"
 import { useUserSubscription } from '@/hooks/use-user-subscription';
 import { useCropSlots } from '@/hooks/use-crop-slots';
+import { supabase } from '@/lib/client';
 
 // Calcula el tiempo restante hasta las 09:00 del día siguiente
 function timeUntilNextNine(): string {
@@ -88,18 +89,33 @@ export function CropSlots() {
 
     setIsSaving(true);
     try {
-      const slotsToAdd = selected.map((p) => ({
-        plant_name: p.nombre,
-        plant_variety: p.familia ?? p.tipo_de_planta,
-        plant_image: p.imagen,
-        health: 'optimal' as const,
-        progress: 0,
-        days_to_harvest: 0,
-        rack: '—',
-        level: 0,
-      }));
+      // Obtener los IDs de las plantas desde la base de datos
+      const plantNames = selected.map(p => p.nombre);
 
-      await addSlots(slotsToAdd);
+      const { data: plantsData, error: plantsError } = await supabase
+        .from('plants')
+        .select('id, plant_name')
+        .in('plant_name', plantNames);
+
+      if (plantsError) {
+        throw plantsError;
+      }
+
+      // Crear mapa de nombre -> id
+      const plantNameToId = new Map(
+        (plantsData || []).map(p => [p.plant_name, p.id])
+      );
+
+      // Obtener IDs en orden
+      const plantIds = selected
+        .map(p => plantNameToId.get(p.nombre))
+        .filter((id): id is string => id !== undefined);
+
+      if (plantIds.length !== selected.length) {
+        throw new Error('No se encontraron algunas plantas en la base de datos');
+      }
+
+      await addSlots(plantIds);
       setOpenSlot(null);
     } catch (error) {
       console.error('Error adding slots:', error);
@@ -123,12 +139,48 @@ export function CropSlots() {
     setDraftSlots((prev) => prev.filter((s) => s.id !== id));
   }
 
+  async function removeSlotCompletely(id: string) {
+    if (isLoading || isSaving) return;
+
+    setIsSaving(true);
+    try {
+      await removeSlot(id);
+    } catch (error) {
+      console.error('Error removing slot:', error);
+      alert('Error al eliminar el cultivo. Por favor intenta de nuevo.');
+    } finally {
+      setIsSaving(false);
+    }
+  }
+
   async function confirmEdit() {
     if (isLoading || isSaving) return;
 
     setIsSaving(true);
     try {
-      await updateSlots(draftSlots);
+      // Obtener los IDs de las plantas actuales en el draft
+      const plantNames = draftSlots.map(s => s.name);
+
+      const { data: plantsData, error: plantsError } = await supabase
+        .from('plants')
+        .select('id, plant_name')
+        .in('plant_name', plantNames);
+
+      if (plantsError) {
+        throw plantsError;
+      }
+
+      // Crear mapa de nombre -> id
+      const plantNameToId = new Map(
+        (plantsData || []).map(p => [p.plant_name, p.id])
+      );
+
+      // Obtener IDs en orden
+      const plantIds = draftSlots
+        .map(s => plantNameToId.get(s.name))
+        .filter((id): id is string => id !== undefined);
+
+      await updateSlots(plantIds);
       setEditMode(false);
       setConfirmDialogOpen(false);
     } catch (error) {
