@@ -1,10 +1,8 @@
 import { useLiveSensors } from '@/hooks/use-live-sensors';
-import { statusColor, statusLabel } from '@/lib/sensor-types';
 import { Sprout, Plus, SquarePen, SquareCheckBig, Undo, CircleX, Clock9 } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import { SensorSection } from '@/components/dashboard/crop-sensor';
 import { CropSelectModal } from '@/components/dashboard/crop-select-modal';
-import type { Plants } from '@/lib/plants-data';
 import type { CropSlot } from '@/lib/sensor-types';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -26,7 +24,6 @@ import {
 } from "@/components/ui/tooltip"
 import { useUserSubscription } from '@/hooks/use-user-subscription';
 import { useCropSlots } from '@/hooks/use-crop-slots';
-import { supabase } from '@/lib/client';
 
 // Calcula el tiempo restante hasta las 09:00 del día siguiente
 function timeUntilNextNine(): string {
@@ -84,37 +81,11 @@ export function CropSlots() {
 
   const isLoading = subscriptionLoading || slotsLoading;
 
-  async function handleConfirmFromModal(selected: Plants[]) {
+  async function handleConfirmFromModal(plantIds: string[]) {
     if (isLoading || isSaving) return;
 
     setIsSaving(true);
     try {
-      // Obtener los IDs de las plantas desde la base de datos
-      const plantNames = selected.map(p => p.nombre);
-
-      const { data: plantsData, error: plantsError } = await supabase
-        .from('plants')
-        .select('id, plant_name')
-        .in('plant_name', plantNames);
-
-      if (plantsError) {
-        throw plantsError;
-      }
-
-      // Crear mapa de nombre -> id
-      const plantNameToId = new Map(
-        (plantsData || []).map(p => [p.plant_name, p.id])
-      );
-
-      // Obtener IDs en orden
-      const plantIds = selected
-        .map(p => plantNameToId.get(p.nombre))
-        .filter((id): id is string => id !== undefined);
-
-      if (plantIds.length !== selected.length) {
-        throw new Error('No se encontraron algunas plantas en la base de datos');
-      }
-
       await addSlots(plantIds);
       setOpenSlot(null);
     } catch (error) {
@@ -158,28 +129,7 @@ export function CropSlots() {
 
     setIsSaving(true);
     try {
-      // Obtener los IDs de las plantas actuales en el draft
-      const plantNames = draftSlots.map(s => s.name);
-
-      const { data: plantsData, error: plantsError } = await supabase
-        .from('plants')
-        .select('id, plant_name')
-        .in('plant_name', plantNames);
-
-      if (plantsError) {
-        throw plantsError;
-      }
-
-      // Crear mapa de nombre -> id
-      const plantNameToId = new Map(
-        (plantsData || []).map(p => [p.plant_name, p.id])
-      );
-
-      // Obtener IDs en orden
-      const plantIds = draftSlots
-        .map(s => plantNameToId.get(s.name))
-        .filter((id): id is string => id !== undefined);
-
+      const plantIds = draftSlots.map(s => s.plant_id);
       await updateSlots(plantIds);
       setEditMode(false);
       setConfirmDialogOpen(false);

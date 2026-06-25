@@ -51,7 +51,7 @@ export function useCropSlots(): UseCropSlotsState {
 		setError(null);
 
 		try {
-			// Obtener selecciones de slots del usuario con información de la planta
+			// Obtener selecciones de slots del usuario con informacion de la planta
 			const { data, error: fetchError } = await supabase
 				.from('user_slot_selections')
 				.select(`
@@ -91,6 +91,7 @@ export function useCropSlots(): UseCropSlotsState {
 
 				return {
 					id: selection.id,
+					plant_id: selection.plant_id,
 					name: plant?.plant_name || 'Planta',
 					variety: plant?.scientific_name || plant?.category || '',
 					image: plant?.image_url || '/placeholder.png',
@@ -119,6 +120,20 @@ export function useCropSlots(): UseCropSlotsState {
 		if (!user) return;
 
 		try {
+			// Obtener informacion de las plantas (incluyendo harvest_time_days)
+			const { data: plantsData, error: plantsError } = await supabase
+				.from('plants')
+				.select('id, harvest_time_days')
+				.in('id', plantIds);
+
+			if (plantsError) {
+				throw plantsError;
+			}
+
+			const plantHarvestDays = new Map(
+				(plantsData || []).map(p => [p.id, p.harvest_time_days])
+			);
+
 			// Obtener slots disponibles
 			const { data: availableSlots, error: slotsError } = await supabase
 				.from('slots')
@@ -134,13 +149,25 @@ export function useCropSlots(): UseCropSlotsState {
 				throw new Error('No hay suficientes slots disponibles');
 			}
 
-			// Crear selecciones
-			const selections = plantIds.map((plantId, index) => ({
-				user_id: user.id,
-				slot_id: availableSlots[index].id,
-				plant_id: plantId,
-				status: 'growing',
-			}));
+			// Calcular fechas
+			const now = new Date();
+			const selectedAt = now.toISOString();
+
+			// Crear selecciones con fechas calculadas
+			const selections = plantIds.map((plantId, index) => {
+				const harvestDays = plantHarvestDays.get(plantId) || 30;
+				const expectedHarvestDate = new Date(now);
+				expectedHarvestDate.setDate(expectedHarvestDate.getDate() + harvestDays);
+
+				return {
+					user_id: user.id,
+					slot_id: availableSlots[index].id,
+					plant_id: plantId,
+					status: 'growing',
+					selected_at: selectedAt,
+					expected_harvest_date: expectedHarvestDate.toISOString(),
+				};
+			});
 
 			const { error: insertError } = await supabase
 				.from('user_slot_selections')
@@ -148,6 +175,17 @@ export function useCropSlots(): UseCropSlotsState {
 
 			if (insertError) {
 				throw insertError;
+			}
+
+			// Marcar slots como ocupados
+			const slotIds = availableSlots.slice(0, plantIds.length).map(s => s.id);
+			const { error: updateSlotsError } = await supabase
+				.from('slots')
+				.update({ is_occupied: true })
+				.in('id', slotIds);
+
+			if (updateSlotsError) {
+				console.error('Error updating slot occupancy:', updateSlotsError);
 			}
 
 			await fetchSlots();
@@ -161,6 +199,17 @@ export function useCropSlots(): UseCropSlotsState {
 		if (!user) return;
 
 		try {
+			// Obtener el slot_id antes de eliminar
+			const { data: selection, error: fetchError } = await supabase
+				.from('user_slot_selections')
+				.select('slot_id')
+				.eq('id', selectionId)
+				.single();
+
+			if (fetchError) {
+				throw fetchError;
+			}
+
 			const { error: deleteError } = await supabase
 				.from('user_slot_selections')
 				.delete()
@@ -169,6 +218,14 @@ export function useCropSlots(): UseCropSlotsState {
 
 			if (deleteError) {
 				throw deleteError;
+			}
+
+			// Liberar el slot
+			if (selection?.slot_id) {
+				await supabase
+					.from('slots')
+					.update({ is_occupied: false })
+					.eq('id', selection.slot_id);
 			}
 
 			await fetchSlots();
@@ -182,6 +239,16 @@ export function useCropSlots(): UseCropSlotsState {
 		if (!user) return;
 
 		try {
+			// Obtener los slot_ids de las selecciones actuales
+			const { data: currentSelections, error: fetchCurrentError } = await supabase
+				.from('user_slot_selections')
+				.select('slot_id')
+				.eq('user_id', user.id);
+
+			if (fetchCurrentError) {
+				throw fetchCurrentError;
+			}
+
 			// Eliminar todas las selecciones actuales
 			const { error: deleteError } = await supabase
 				.from('user_slot_selections')
@@ -192,8 +259,31 @@ export function useCropSlots(): UseCropSlotsState {
 				throw deleteError;
 			}
 
+			// Liberar los slots que estaban ocupados
+			if (currentSelections && currentSelections.length > 0) {
+				const slotIds = currentSelections.map(s => s.slot_id);
+				await supabase
+					.from('slots')
+					.update({ is_occupied: false })
+					.in('id', slotIds);
+			}
+
 			// Si hay plantas para agregar
 			if (plantIds.length > 0) {
+				// Obtener informacion de las plantas (incluyendo harvest_time_days)
+				const { data: plantsData, error: plantsError } = await supabase
+					.from('plants')
+					.select('id, harvest_time_days')
+					.in('id', plantIds);
+
+				if (plantsError) {
+					throw plantsError;
+				}
+
+				const plantHarvestDays = new Map(
+					(plantsData || []).map(p => [p.id, p.harvest_time_days])
+				);
+
 				// Obtener slots disponibles
 				const { data: availableSlots, error: slotsError } = await supabase
 					.from('slots')
@@ -209,13 +299,25 @@ export function useCropSlots(): UseCropSlotsState {
 					throw new Error('No hay suficientes slots disponibles');
 				}
 
+				// Calcular fechas
+				const now = new Date();
+				const selectedAt = now.toISOString();
+
 				// Crear nuevas selecciones
-				const selections = plantIds.map((plantId, index) => ({
-					user_id: user.id,
-					slot_id: availableSlots[index].id,
-					plant_id: plantId,
-					status: 'growing',
-				}));
+				const selections = plantIds.map((plantId, index) => {
+					const harvestDays = plantHarvestDays.get(plantId) || 30;
+					const expectedHarvestDate = new Date(now);
+					expectedHarvestDate.setDate(expectedHarvestDate.getDate() + harvestDays);
+
+					return {
+						user_id: user.id,
+						slot_id: availableSlots[index].id,
+						plant_id: plantId,
+						status: 'growing',
+						selected_at: selectedAt,
+						expected_harvest_date: expectedHarvestDate.toISOString(),
+					};
+				});
 
 				const { error: insertError } = await supabase
 					.from('user_slot_selections')
@@ -224,6 +326,13 @@ export function useCropSlots(): UseCropSlotsState {
 				if (insertError) {
 					throw insertError;
 				}
+
+				// Marcar slots como ocupados
+				const newSlotIds = availableSlots.slice(0, plantIds.length).map(s => s.id);
+				await supabase
+					.from('slots')
+					.update({ is_occupied: true })
+					.in('id', newSlotIds);
 			}
 
 			await fetchSlots();

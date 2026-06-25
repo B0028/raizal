@@ -22,6 +22,7 @@ export type ReadingPoint = {
 
 export type CropSlot = {
   id: string;
+  plant_id: string;
   name: string;
   variety: string;
   rack: string;
