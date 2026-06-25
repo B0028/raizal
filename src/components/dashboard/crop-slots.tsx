@@ -225,7 +225,7 @@ export function CropSlots() {
                     /* Modo pendiente: cronómetro hasta las 9am */
                     <div className="flex items-center gap-1.5">
                       <Clock9 className="size-3 text-amber-400 shrink-0" />
-                      <span className="font-mono text-[10px] text-amber-400">{time}</span>
+                      <span className="font-mono text-[10px] text-amber-400">Esperando para sembrar {time}</span>
                     </div>
                   ) : (
                     /* Modo activo: barra de progreso + rack */
