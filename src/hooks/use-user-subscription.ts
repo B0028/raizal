@@ -3,21 +3,21 @@ import { supabase } from '@/lib/client';
 import { useAuth } from '@/context/AuthContext';
 
 export interface MembershipPlan {
-	id: bigint;
-	name: string;
-	display_name: string;
-	price_monthly: number;
+	id: string;
+	plan_name: string;
 	slots_total: number;
-	description: string;
-	features: string[];
+	price_uyu: number;
+	description: string | null;
 }
 
 export interface UserSubscription {
-	id: bigint;
-	plan_id: bigint;
+	id: string;
+	user_id: string;
+	plan_id: string;
 	status: string;
-	started_at: string;
-	expires_at: string | null;
+	slots_used: number;
+	start_date: string;
+	end_date: string;
 	plan: MembershipPlan;
 }
 
@@ -54,18 +54,18 @@ export function useUserSubscription(): UserSubscriptionState {
 				.from('subscriptions')
 				.select(`
 					id,
+					user_id,
 					plan_id,
 					status,
-					started_at,
-					expires_at,
+					slots_used,
+					start_date,
+					end_date,
 					plan:membership_plans (
 						id,
-						name,
-						display_name,
-						price_monthly,
+						plan_name,
 						slots_total,
-						description,
-						features
+						price_uyu,
+						description
 					)
 				`)
 				.eq('user_id', user.id)
@@ -76,9 +76,9 @@ export function useUserSubscription(): UserSubscriptionState {
 				throw subscriptionError;
 			}
 
-			// Obtener cantidad de slots usados
+			// Obtener cantidad de slots usados desde user_slot_selections
 			const { count, error: countError } = await supabase
-				.from('crop_slots')
+				.from('user_slot_selections')
 				.select('*', { count: 'exact', head: true })
 				.eq('user_id', user.id);
 
