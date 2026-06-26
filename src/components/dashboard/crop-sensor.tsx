@@ -8,6 +8,7 @@ import {
   Zap,
   Sun,
   CloudRain,
+  Beaker,
   Unplug,
 } from 'lucide-react';
 
@@ -18,7 +19,7 @@ const icons: Record<string, typeof Droplet> = {
   ambient_temp: Thermometer,
   humidity: CloudRain,
   light: Sun,
-  nutrients: Droplet,
+  nutrients: Beaker,
 };
 
 function SensorBar({ metric }: { metric: SensorMetric }) {

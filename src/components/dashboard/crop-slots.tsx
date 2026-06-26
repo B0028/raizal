@@ -1,11 +1,11 @@
 import { useRackMetrics } from '@/hooks/use-rack-metrics';
 import {
-  areSensorsDisconnected,
+  areCropSensorsDisconnected,
   formatCountdown,
   getPlantingDeadline,
   isInPlantingWindow,
   isReadyToHarvest,
-  rackMetricsToSensors,
+  rackMetricsToCropSensors,
 } from '@/lib/rack-metrics';
 import {
   Sprout,
@@ -65,15 +65,18 @@ function CropCardImage({
   const readyToHarvest = isReadyToHarvest(crop.expectedHarvestDate);
 
   return (
-    <div className="relative flex min-h-[10rem] shrink-0 flex-col justify-end overflow-hidden bg-foreground/10 sm:min-h-[11rem]">
+      <div className="relative flex min-h-[10rem] shrink-0 flex-col justify-end overflow-hidden bg-foreground/10 sm:min-h-[11rem]">
       <img
         src={crop.image || '/placeholder.png'}
         alt={crop.name}
+        loading="lazy"
+        decoding="async"
         className="absolute inset-0 size-full object-cover transition-transform duration-500 group-hover:scale-105"
         onError={(e) => {
           (e.target as HTMLImageElement).src = '/placeholder.png';
         }}
       />
+
 
       <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/30 to-black/40" />
 
@@ -101,12 +104,26 @@ function CropCardImage({
           </div>
           {!readyToHarvest && (
             <div className="shrink-0 text-right">
-              <p className="font-heading text-2xl font-bold leading-none text-white sm:text-3xl">
-                {crop.daysToHarvest}
-              </p>
-              <p className="font-mono text-[8px] uppercase leading-tight text-white/55 sm:text-[9px]">
-                {crop.daysToHarvest === 1 ? 'día' : 'días'}
-              </p>
+              {(() => {
+                // crop.progress está en % del crecimiento (0..100)
+                // daysToHarvest es el total restante (aprox). Ajustamos para reflejar el progreso actual.
+                const totalDays = Math.max(1, crop.daysToHarvest);
+                const remaining = Math.max(
+                  0,
+                  Math.ceil(totalDays * (1 - Math.min(100, Math.max(0, crop.progress)) / 100)),
+                );
+
+                return (
+                  <>
+                    <p className="font-heading text-2xl font-bold leading-none text-white sm:text-3xl">
+                      {remaining}
+                    </p>
+                    <p className="font-mono text-[8px] uppercase leading-tight text-white/55 sm:text-[9px]">
+                      {remaining === 1 ? 'día' : 'días'}
+                    </p>
+                  </>
+                );
+              })()}
             </div>
           )}
         </div>
@@ -116,7 +133,7 @@ function CropCardImage({
             <div className="h-1.5 overflow-hidden rounded-full bg-black/40 sm:h-2">
               <div
                 className="h-full rounded-full bg-gradient-to-r from-emerald-400 to-emerald-600 transition-all duration-500"
-                style={{ width: `${crop.progress}%` }}
+                style={{ width: `${Math.min(100, Math.max(0, crop.progress))}%` }}
               />
             </div>
           </div>
@@ -128,8 +145,8 @@ function CropCardImage({
 
 export function CropSlots() {
   const { metrics: rackMetrics } = useRackMetrics();
-  const sensorMetrics = rackMetricsToSensors(rackMetrics);
-  const sensorsDisconnected = areSensorsDisconnected(rackMetrics);
+  const sensorMetrics = rackMetricsToCropSensors(rackMetrics);
+  const sensorsDisconnected = areCropSensorsDisconnected(rackMetrics);
 
   const { slotsTotal, slotsUsed, loading: subscriptionLoading } = useUserSubscription();
   const {

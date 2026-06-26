@@ -1,14 +1,26 @@
 import { Area, AreaChart, ResponsiveContainer } from 'recharts';
 import type { ReadingPoint, SensorMetric } from '@/lib/sensor-types';
 import { statusOf, statusColor, statusLabel } from '@/lib/sensor-types';
+import { getHistoryValues } from '@/lib/rack-metrics';
 import { cn } from '@/lib/utils';
-import { Droplet, Thermometer, FlaskConical, Wind } from 'lucide-react';
+import {
+  Droplet,
+  Thermometer,
+  FlaskConical,
+  Zap,
+  Sun,
+  CloudRain,
+  Beaker,
+} from 'lucide-react';
 
 const icons: Record<string, typeof Droplet> = {
   ph: FlaskConical,
-  temp: Thermometer,
-  nitrates: Droplet,
-  oxygen: Wind,
+  ec: Zap,
+  water_temp: Droplet,
+  ambient_temp: Thermometer,
+  humidity: CloudRain,
+  light: Sun,
+  nutrients: Beaker,
 };
 
 export function SensorCard({
@@ -21,9 +33,7 @@ export function SensorCard({
   const status = statusOf(metric);
   const color = statusColor[status];
   const Icon = icons[metric.key] ?? Droplet;
-  const chartData = history.map((h) => ({
-    v: h[metric.key as keyof ReadingPoint] as number,
-  }));
+  const chartData = getHistoryValues(history, metric.key);
   const gradId = `grad-${metric.key}`;
 
   const range = metric.max - metric.min;
@@ -73,28 +83,36 @@ export function SensorCard({
       </div>
 
       <div className="mt-3 h-12">
-        <ResponsiveContainer width="100%" height="100%">
-          <AreaChart
-            data={chartData}
-            margin={{ top: 2, right: 0, bottom: 0, left: 0 }}
-          >
-            <defs>
-              <linearGradient id={gradId} x1="0" y1="0" x2="0" y2="1">
-                <stop offset="0%" stopColor={color} stopOpacity={0.35} />
-                <stop offset="100%" stopColor={color} stopOpacity={0} />
-              </linearGradient>
-            </defs>
-            <Area
-              type="monotone"
-              dataKey="v"
-              stroke={color}
-              strokeWidth={2}
-              fill={`url(#${gradId})`}
-              isAnimationActive={false}
-              dot={false}
-            />
-          </AreaChart>
-        </ResponsiveContainer>
+        {chartData.length > 1 ? (
+          <ResponsiveContainer width="100%" height="100%">
+            <AreaChart
+              data={chartData}
+              margin={{ top: 2, right: 0, bottom: 0, left: 0 }}
+            >
+              <defs>
+                <linearGradient id={gradId} x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stopColor={color} stopOpacity={0.35} />
+                  <stop offset="100%" stopColor={color} stopOpacity={0} />
+                </linearGradient>
+              </defs>
+              <Area
+                type="monotone"
+                dataKey="v"
+                stroke={color}
+                strokeWidth={2}
+                fill={`url(#${gradId})`}
+                isAnimationActive={false}
+                dot={false}
+              />
+            </AreaChart>
+          </ResponsiveContainer>
+        ) : (
+          <div className="flex h-full items-center justify-center">
+            <p className="font-mono text-[10px] text-muted-foreground">
+              Recolectando historial…
+            </p>
+          </div>
+        )}
       </div>
 
       <div className="mt-3">
@@ -104,7 +122,7 @@ export function SensorCard({
             style={{ left: `${optStart}%`, width: `${optWidth}%` }}
           />
           <div
-            className="absolute top-1/2 size-2.5 -translate-x-1/2 -translate-y-1/2 rounded-full ring-2 ring-background"
+            className="absolute top-1/2 size-2.5 -translate-x-1/2 -translate-y-1/2 rounded-full ring-2 ring-background transition-[left] duration-700 ease-out"
             style={{
               left: `${Math.min(98, Math.max(2, pos))}%`,
               background: color,

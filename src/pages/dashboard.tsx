@@ -1,16 +1,15 @@
-import { useLiveSensors } from '@/hooks/use-live-sensors';
-import { DashboardSidebar } from '@/components/dashboard/sidebar';
-import { DashboardTopbar } from '@/components/dashboard/topbar';
+import { useRackMetrics } from '@/hooks/use-rack-metrics';
+import { areSensorsDisconnected, rackMetricsToSensors } from '@/lib/rack-metrics';
 import { SensorCard } from '@/components/dashboard/sensor-card';
-import { TrendChart } from '@/components/dashboard/trend-chart';
 import { CropSlots } from '@/components/dashboard/crop-slots';
-import { ActivityLog } from '@/components/dashboard/activity-log';
 import { MembershipPanel } from '@/components/dashboard/membership-panel';
-import { YieldChart } from '@/components/dashboard/yield-chart';
 import { ImpactPanel } from '@/components/dashboard/impact-panel';
+import { Unplug } from 'lucide-react';
 
 export function DashboardPage() {
-  const { metrics, history } = useLiveSensors();
+  const { metrics: rackMetrics, history } = useRackMetrics();
+  const sensorMetrics = rackMetricsToSensors(rackMetrics);
+  const sensorsDisconnected = areSensorsDisconnected(rackMetrics);
 
   return (
     <main className="flex-1 space-y-6 p-4 lg:p-8">
@@ -35,22 +34,25 @@ export function DashboardPage() {
       </section>
 
       <section>
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
-          {metrics.map((metric) => (
-            <SensorCard
-              key={metric.key}
-              metric={metric}
-              history={history}
-            />
-          ))}
-        </div>
+        {sensorsDisconnected ? (
+          <div className="glass flex items-center justify-center gap-2.5 rounded-2xl py-12 text-muted-foreground/70">
+            <Unplug className="size-5" />
+            <span className="font-heading text-sm font-semibold">
+              Sensores desconectados
+            </span>
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+            {sensorMetrics.map((metric) => (
+              <SensorCard
+                key={metric.key}
+                metric={metric}
+                history={history}
+              />
+            ))}
+          </div>
+        )}
       </section>
-
-      {/*
-      <section>
-        <YieldChart />
-      </section>
-      */}
 
       <footer className="flex flex-col items-center justify-between gap-2 border-t border-border pt-6 text-center sm:flex-row sm:text-left">
         <p className="font-mono text-xs text-muted-foreground">
@@ -63,5 +65,3 @@ export function DashboardPage() {
     </main>
   );
 }
-
-//             <ActivityLog />

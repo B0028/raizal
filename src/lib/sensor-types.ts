@@ -14,10 +14,13 @@ export type SensorMetric = {
 
 export type ReadingPoint = {
   time: string;
-  ph: number;
-  temp: number;
-  nitrates: number;
-  oxygen: number;
+  ph?: number;
+  ec?: number;
+  water_temp?: number;
+  ambient_temp?: number;
+  humidity?: number;
+  light?: number;
+  nutrients?: number;
 };
 
 export type CropSlot = {

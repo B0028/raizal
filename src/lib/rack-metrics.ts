@@ -1,4 +1,4 @@
-import type { SensorMetric } from '@/lib/sensor-types';
+import type { SensorMetric, ReadingPoint } from '@/lib/sensor-types';
 import type { RackMetrics } from '@/hooks/use-rack-metrics';
 
 export const RACK_SENSOR_KEYS = [
@@ -9,6 +9,13 @@ export const RACK_SENSOR_KEYS = [
   'humidity',
   'light_lux',
   'nutrients_percent',
+] as const;
+
+export const CROP_CARD_SENSOR_KEYS = [
+  'ph',
+  'water_temp',
+  'light',
+  'nutrients',
 ] as const;
 
 const METRIC_DEFINITIONS: Omit<SensorMetric, 'value'>[] = [
@@ -34,7 +41,7 @@ const METRIC_DEFINITIONS: Omit<SensorMetric, 'value'>[] = [
   },
   {
     key: 'water_temp',
-    label: 'Temp. del agua',
+    label: 'Temperatura del agua',
     unit: '°C',
     min: 12,
     max: 32,
@@ -84,7 +91,7 @@ const METRIC_DEFINITIONS: Omit<SensorMetric, 'value'>[] = [
   },
 ];
 
-const DB_KEY_MAP: Record<string, keyof RackMetrics> = {
+export const DB_KEY_MAP: Record<string, keyof RackMetrics> = {
   ph: 'ph_level',
   ec: 'ec_level',
   water_temp: 'water_temp',
@@ -94,10 +101,55 @@ const DB_KEY_MAP: Record<string, keyof RackMetrics> = {
   nutrients: 'nutrients_percent',
 };
 
-export function rackMetricsToSensors(data: RackMetrics | null): SensorMetric[] {
+const HISTORY_LIMIT = 30;
+
+function rowToHistoryPoint(row: RackMetrics): ReadingPoint {
+  return {
+    time: new Date(row.recorded_at).toLocaleTimeString('es-ES', {
+      hour: '2-digit',
+      minute: '2-digit',
+    }),
+    ph: row.ph_level ?? undefined,
+    ec: row.ec_level ?? undefined,
+    water_temp: row.water_temp ?? undefined,
+    ambient_temp: row.ambient_temp ?? undefined,
+    humidity: row.humidity ?? undefined,
+    light: row.light_lux ?? undefined,
+    nutrients: row.nutrients_percent ?? undefined,
+  };
+}
+
+export function buildHistoryFromRows(rows: RackMetrics[]): ReadingPoint[] {
+  return [...rows].reverse().map(rowToHistoryPoint);
+}
+
+export function appendHistoryPoint(
+  prev: ReadingPoint[],
+  row: RackMetrics,
+  max = HISTORY_LIMIT,
+): ReadingPoint[] {
+  return [...prev, rowToHistoryPoint(row)].slice(-max);
+}
+
+export function getHistoryValues(
+  history: ReadingPoint[],
+  metricKey: string,
+): { v: number }[] {
+  return history.flatMap((point) => {
+    const value = point[metricKey as keyof ReadingPoint];
+    return typeof value === 'number' ? [{ v: value }] : [];
+  });
+}
+
+export function rackMetricsToSensors(
+  data: RackMetrics | null,
+  keys: readonly string[] = METRIC_DEFINITIONS.map((d) => d.key),
+): SensorMetric[] {
   if (!data) return [];
 
   return METRIC_DEFINITIONS.flatMap((def) => {
+    if (!keys.includes(def.key)) return [];
+
     const dbKey = DB_KEY_MAP[def.key];
     const raw = data[dbKey];
     if (raw == null) return [];
@@ -111,9 +163,18 @@ export function rackMetricsToSensors(data: RackMetrics | null): SensorMetric[] {
   });
 }
 
+export function rackMetricsToCropSensors(data: RackMetrics | null): SensorMetric[] {
+  return rackMetricsToSensors(data, CROP_CARD_SENSOR_KEYS);
+}
+
 export function areSensorsDisconnected(data: RackMetrics | null): boolean {
   if (!data) return true;
   return RACK_SENSOR_KEYS.every((key) => data[key] == null);
+}
+
+export function areCropSensorsDisconnected(data: RackMetrics | null): boolean {
+  if (!data) return true;
+  return CROP_CARD_SENSOR_KEYS.every((key) => data[DB_KEY_MAP[key]] == null);
 }
 
 export function getPlantingDeadline(selectedAt: string): Date {

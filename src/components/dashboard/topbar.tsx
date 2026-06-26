@@ -2,8 +2,8 @@ import { memberPlan } from '@/lib/dashboard-data';
 import { Bell, Leaf } from 'lucide-react';
 import GlassUserMenu from '@/components/ui/glass-user-menu'
 
-export function DashboardTopbar({ lastUpdate }: { lastUpdate: Date }) {
-  const time = lastUpdate.toLocaleTimeString('es-ES', {
+export function DashboardTopbar({ lastUpdate }: { lastUpdate: Date | null }) {
+  const time = (lastUpdate ?? new Date()).toLocaleTimeString('es-ES', {
     hour: '2-digit',
     minute: '2-digit',
     second: '2-digit',
