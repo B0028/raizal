@@ -3,6 +3,7 @@ import type { ActivityEvent, CropSlot } from '@/lib/sensor-types';
 export const cropSlots: CropSlot[] = [
   {
     id: 'slot-01',
+    plant_id: 'mock-01',
     name: 'Lechuga Mantecosa',
     variety: 'Lactuca sativa',
     rack: 'Rack A',
@@ -11,9 +12,12 @@ export const cropSlots: CropSlot[] = [
     daysToHarvest: 4,
     health: 'optimal',
     image: '/crops/lettuce.png',
+    selectedAt: '2026-06-01T10:00:00.000Z',
+    expectedHarvestDate: '2026-07-15',
   },
   {
     id: 'slot-02',
+    plant_id: 'mock-02',
     name: 'Albahaca Genovesa',
     variety: 'Ocimum basilicum',
     rack: 'Rack A',
@@ -22,9 +26,12 @@ export const cropSlots: CropSlot[] = [
     daysToHarvest: 9,
     health: 'optimal',
     image: '/crops/basil.png',
+    selectedAt: '2026-06-05T10:00:00.000Z',
+    expectedHarvestDate: '2026-07-20',
   },
   {
     id: 'slot-03',
+    plant_id: 'mock-03',
     name: 'Kale Rizado',
     variety: 'Brassica oleracea',
     rack: 'Rack B',
@@ -33,9 +40,12 @@ export const cropSlots: CropSlot[] = [
     daysToHarvest: 16,
     health: 'warning',
     image: '/crops/kale.png',
+    selectedAt: '2026-06-10T10:00:00.000Z',
+    expectedHarvestDate: '2026-07-25',
   },
   {
     id: 'slot-04',
+    plant_id: 'mock-04',
     name: 'Fresa Albión',
     variety: 'Fragaria × ananassa',
     rack: 'Rack B',
@@ -44,6 +54,8 @@ export const cropSlots: CropSlot[] = [
     daysToHarvest: 2,
     health: 'optimal',
     image: '/crops/strawberry.png',
+    selectedAt: '2026-06-20T10:00:00.000Z',
+    expectedHarvestDate: '2026-07-28',
   },
 ];
 
