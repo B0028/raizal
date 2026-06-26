@@ -75,7 +75,7 @@ export function useCropSlots(): UseCropSlotsState {
 					selection.expected_harvest_date,
 				);
 				const daysToHarvest = calcDaysToHarvest(selection.expected_harvest_date);
-
+				
 				return {
 					id: selection.id,
 					plant_id: selection.plant_id,
