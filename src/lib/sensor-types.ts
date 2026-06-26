@@ -31,6 +31,8 @@ export type CropSlot = {
   daysToHarvest: number;
   health: SensorStatus;
   image: string | null;
+  selectedAt: string;
+  expectedHarvestDate: string;
 };
 
 export type ActivityEvent = {

@@ -2,6 +2,7 @@ import { useEffect, useState, useCallback } from 'react';
 import { supabase } from '@/lib/client';
 import { useAuth } from '@/context/AuthContext';
 import type { CropSlot } from '@/lib/sensor-types';
+import { calcDaysToHarvest, calcGrowthProgress } from '@/lib/rack-metrics';
 
 export interface UseCropSlotsState {
 	slots: CropSlot[];
@@ -10,6 +11,7 @@ export interface UseCropSlotsState {
 	addSlots: (plantIds: string[]) => Promise<void>;
 	removeSlot: (selectionId: string) => Promise<void>;
 	updateSlots: (plantIds: string[]) => Promise<void>;
+	harvestSlot: (selectionId: string) => Promise<void>;
 	refetch: () => Promise<void>;
 }
 
@@ -61,20 +63,18 @@ export function useCropSlots(): UseCropSlotsState {
 					)
 				`)
 				.eq('user_id', user.id)
+				.eq('status', 'growing')
 				.order('created_at', { ascending: true });
 
 			if (fetchError) throw fetchError;
 
 			const mappedSlots: CropSlot[] = (data || []).map((selection: any) => {
 				const plant = selection.plants;
-				const selectedDate = new Date(selection.selected_at);
-				const today = new Date();
-				const harvestDays = plant?.harvest_time_days || 1;
-				const daysSinceSelection = Math.floor(
-					(today.getTime() - selectedDate.getTime()) / (1000 * 60 * 60 * 24)
+				const progress = calcGrowthProgress(
+					selection.selected_at,
+					selection.expected_harvest_date,
 				);
-				const daysToHarvest = Math.max(0, harvestDays - daysSinceSelection);
-				const progress = Math.min(100, Math.round((daysSinceSelection / harvestDays) * 100));
+				const daysToHarvest = calcDaysToHarvest(selection.expected_harvest_date);
 
 				return {
 					id: selection.id,
@@ -87,6 +87,8 @@ export function useCropSlots(): UseCropSlotsState {
 					daysToHarvest,
 					rack: '—',
 					level: 0,
+					selectedAt: selection.selected_at,
+					expectedHarvestDate: selection.expected_harvest_date,
 				};
 			});
 
@@ -255,6 +257,28 @@ export function useCropSlots(): UseCropSlotsState {
 		}
 	}, [user, fetchSlots]);
 
+	const harvestSlot = useCallback(async (selectionId: string) => {
+		if (!user) return;
+
+		try {
+			const { error: updateError } = await supabase
+				.from('user_slot_selections')
+				.update({
+					status: 'harvested',
+					actual_harvest_date: new Date().toISOString(),
+				})
+				.eq('id', selectionId)
+				.eq('user_id', user.id);
+
+			if (updateError) throw updateError;
+
+			await fetchSlots();
+		} catch (err) {
+			console.error('Error harvesting slot:', err);
+			throw err;
+		}
+	}, [user, fetchSlots]);
+
 	return {
 		slots,
 		loading,
@@ -262,6 +286,7 @@ export function useCropSlots(): UseCropSlotsState {
 		addSlots,
 		removeSlot,
 		updateSlots,
+		harvestSlot,
 		refetch: fetchSlots,
 	};
 }
