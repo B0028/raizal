@@ -1,5 +1,5 @@
 import { useLiveSensors } from '@/hooks/use-live-sensors';
-import { Sprout, Plus, SquarePen, SquareCheckBig, Undo, CircleX, Clock9 } from 'lucide-react';
+import { Sprout, Plus, SquarePen, SquareCheckBig, Undo, CircleX, Clock9, Unplug } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import { SensorSection } from '@/components/dashboard/crop-sensor';
 import { CropSelectModal } from '@/components/dashboard/crop-select-modal';
@@ -148,7 +148,7 @@ export function CropSlots() {
         <div className="flex flex-wrap items-center justify-between gap-3">
           <div className="flex items-center gap-2.5 flex-wrap">
             <Sprout className="size-4.5 text-primary" />
-            <h2 className="font-heading text-base font-semibold">Mis slots de cultivo</h2>
+            <h2 className="font-heading text-base font-semibold">Mis cultivos</h2>
             <Tooltip>
               <TooltipTrigger render={
                 <Badge
@@ -209,7 +209,7 @@ export function CropSlots() {
         </div>
 
         {/* Grid de cards */}
-        <div className="mt-5 grid grid-cols-2 gap-3 xs:grid-cols-2 sm:grid-cols-3 md:grid-cols-4 xl:grid-cols-6">
+        <div className="mt-5 grid grid-cols-2 gap-3 xs:grid-cols-2 sm:grid-cols-3 md:grid-cols-4 xxl:grid-cols-6">
           {displayedSlots.map((crop) => {
             const isPending = !pastNine && crop.progress === 0 && crop.daysToHarvest === 0;
 
@@ -246,13 +246,13 @@ export function CropSlots() {
                   {/* Fila superior: etiqueta del slot */}
                   {!editMode && (
                     <div className="absolute top-3 left-3 right-3 flex items-center justify-between">
-                      <span className="font-mono text-[9px] tracking-widest uppercase text-white/60">
-                        {crop.rack !== '—' ? crop.rack : 'cultivo activo'}
-                      </span>
                       {!isPending && (
-                        <span className="font-mono text-[9px] tracking-widest uppercase text-white/60">
-                          cosecha en
-                        </span>
+                        <Badge
+                          variant="outline"
+                          className="font-mono text-[10px] text-amber-500 border-amber-500/30 gap-1 uppercase"
+                        >
+                          <Clock9 className="size-3" /> sembrando en {time}
+                        </Badge>
                       )}
                     </div>
                   )}
@@ -291,7 +291,7 @@ export function CropSlots() {
                   {!isPending && (
                     <div className="absolute bottom-0 left-0 right-0 h-[3px] bg-black/40">
                       <div
-                        className="h-full bg-gradient-to-r from-emerald-400 to-emerald-600 transition-all"
+                        className="h-full bg-gradient-to-r from-emerald-400 to-emerald-600 transition-all animate-pulse"
                         style={{ width: `${crop.progress}%` }}
                       />
                     </div>

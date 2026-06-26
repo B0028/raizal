@@ -77,6 +77,13 @@ export function SensorSection({
             }}
           />
         </div>
+        <div className="mt-1.5 flex justify-between font-mono text-[10px] text-muted-foreground">
+          <span>{metric.min}</span>
+          <span className={cn('text-primary')}>
+            óptimo {metric.optimalMin}–{metric.optimalMax}
+          </span>
+          <span>{metric.max}</span>
+        </div>
       </div>
     </div>
   );
