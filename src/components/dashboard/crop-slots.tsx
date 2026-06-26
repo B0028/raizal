@@ -132,7 +132,7 @@ function CropCardImage({
           <div className="px-1">
             <div className="h-1.5 overflow-hidden rounded-full bg-black/40 sm:h-2">
               <div
-                className="h-full rounded-full bg-gradient-to-r from-emerald-400 to-emerald-600 transition-all duration-500"
+                className="h-full rounded-full bg-gradient-to-r from-emerald-400 to-emerald-600 transition-all duration-500 animate-pulse"
                 style={{ width: `${Math.min(100, Math.max(0, crop.progress))}%` }}
               />
             </div>

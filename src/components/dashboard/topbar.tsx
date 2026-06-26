@@ -1,8 +1,13 @@
 import { memberPlan } from '@/lib/dashboard-data';
 import { Bell, Leaf } from 'lucide-react';
 import GlassUserMenu from '@/components/ui/glass-user-menu'
+import { useAuth, useUserProfile } from '@/context/AuthContext'
 
 export function DashboardTopbar({ lastUpdate }: { lastUpdate: Date | null }) {
+  const { user, logout } = useAuth()
+  const profile = useUserProfile()
+
+
   const time = (lastUpdate ?? new Date()).toLocaleTimeString('es-ES', {
     hour: '2-digit',
     minute: '2-digit',
@@ -20,7 +25,7 @@ export function DashboardTopbar({ lastUpdate }: { lastUpdate: Date | null }) {
 
       <div className="hidden flex-col lg:flex">
         <h1 className="font-heading text-lg font-semibold tracking-tight">
-          Hola, {memberPlan.name.split(' ')[0]}
+          Hola, {profile?.username || user?.email?.split('@')[0]}
         </h1>
         <p className="text-xs text-muted-foreground">Bienvenido</p>
       </div>
