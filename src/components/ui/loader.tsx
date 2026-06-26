@@ -111,7 +111,8 @@ export const HydroLoader: React.FC = () => {
             </pre>
 
             <div className="text-[#57bb5e] text-xs uppercase tracking-widest animate-pulse opacity-70">
-              sys.rack // page under construction
+              sys.rack // cargando cultivos
+              {/*sys.rack // page under construction*/}
               {/*sys.rack_01 // initializing_*/}
             </div>
           </div>
