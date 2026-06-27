@@ -3,15 +3,10 @@ FROM node:24-alpine AS build
 WORKDIR /app
 
 COPY package*.json ./
-RUN npm ci
+RUN npm install
 
 COPY . .
-
-EXPOSE 5173
-
-# Comando para levantar Vite/React exponiendo el puerto hacia fuera
-CMD ["npm", "run", "dev", "--", "--host"]
-
+RUN npm run build
 
 FROM nginx:alpine
 
