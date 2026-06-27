@@ -1,8 +1,11 @@
 import { memberPlan } from '@/lib/dashboard-data';
 import { Crown } from 'lucide-react';
+import { useUserSubscription } from '@/hooks/use-user-subscription';
 
 export function MembershipPanel() {
-  const slotPct = (memberPlan.slotsUsed / memberPlan.slotsTotal) * 100;
+  const { slotsTotal, slotsUsed, endDate, planName } = useUserSubscription();
+  const slotPct = (slotsUsed / slotsTotal) * 100;
+
 
   return (
     <>
@@ -13,9 +16,9 @@ export function MembershipPanel() {
               <Crown className="size-4.5 text-amber" />
             </span>
             <div>
-              <p className="text-sm font-semibold">{memberPlan.tier}</p>
+              <p className="text-sm font-semibold">{planName}</p>
               <p className="font-mono text-[11px] text-muted-foreground">
-                Renueva el {memberPlan.renewsOn}
+                Renueva el {endDate}
               </p>
             </div>
           </div>
@@ -28,7 +31,7 @@ export function MembershipPanel() {
           <div className="flex items-center justify-between text-sm">
             <span className="text-muted-foreground">Slots utilizados</span>
             <span className="font-mono font-medium">
-              {memberPlan.slotsUsed} / {memberPlan.slotsTotal}
+              {slotsUsed} / {slotsTotal}
             </span>
           </div>
           <div className="mt-2 h-2 w-full overflow-hidden rounded-full bg-foreground/10">
@@ -38,7 +41,7 @@ export function MembershipPanel() {
             />
           </div>
           <p className="mt-2 text-xs text-muted-foreground">
-            Te quedan {memberPlan.slotsTotal - memberPlan.slotsUsed} slots
+            Te quedan {slotsTotal - slotsUsed} slots
             disponibles para nuevos cultivos en tu huerta.
           </p>
         </div>

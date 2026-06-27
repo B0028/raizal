@@ -25,6 +25,8 @@ export interface UserSubscriptionState {
 	subscription: UserSubscription | null;
 	slotsTotal: number;
 	slotsUsed: number;
+	endDate: string | null;
+	planName: string | null;
 	loading: boolean;
 	error: string | null;
 	refetch: () => Promise<void>;
@@ -102,10 +104,15 @@ export function useUserSubscription(): UserSubscriptionState {
 
 	const slotsTotal = subscription?.plan?.slots_total ?? 0;
 
+	const endDate = subscription?.end_date ?? null;
+	const planName = subscription?.plan?.plan_name ?? null;
+
 	return {
 		subscription,
 		slotsTotal,
 		slotsUsed,
+		endDate,
+		planName,
 		loading,
 		error,
 		refetch: fetchData,

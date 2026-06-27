@@ -5,6 +5,7 @@ import { CropSlots } from '@/components/dashboard/crop-slots';
 import { MembershipPanel } from '@/components/dashboard/membership-panel';
 import { ImpactPanel } from '@/components/dashboard/impact-panel';
 import { Unplug } from 'lucide-react';
+import {ActivityLog} from '@/components/dashboard/activity-log'
 
 export function DashboardPage() {
   const { metrics: rackMetrics, history } = useRackMetrics();
@@ -52,6 +53,10 @@ export function DashboardPage() {
             ))}
           </div>
         )}
+      </section>
+
+      <section>
+          <ActivityLog/>
       </section>
 
       <footer className="flex flex-col items-center justify-between gap-2 border-t border-border pt-6 text-center sm:flex-row sm:text-left">

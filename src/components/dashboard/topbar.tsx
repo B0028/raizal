@@ -1,4 +1,3 @@
-import { memberPlan } from '@/lib/dashboard-data';
 import { Bell, Leaf } from 'lucide-react';
 import GlassUserMenu from '@/components/ui/glass-user-menu'
 import { useAuth, useUserProfile } from '@/context/AuthContext'
@@ -44,7 +43,7 @@ export function DashboardTopbar({ lastUpdate }: { lastUpdate: Date | null }) {
           <Bell className="size-4" />
           <span className="absolute right-2 top-2 size-1.5 rounded-full bg-amber" />
         </button>
-        <GlassUserMenu user={memberPlan} /> 
+        <GlassUserMenu /> 
 
       </div>
     </header>

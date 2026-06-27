@@ -105,8 +105,6 @@ function CropCardImage({
           {!readyToHarvest && (
             <div className="shrink-0 text-right">
               {(() => {
-                // crop.progress está en % del crecimiento (0..100)
-                // daysToHarvest es el total restante (aprox). Ajustamos para reflejar el progreso actual.
                 const totalDays = Math.max(1, crop.daysToHarvest);
                 const remaining = Math.max(
                   0,
@@ -333,7 +331,6 @@ export function CropSlots() {
           {displayedSlots.map((crop) => {
             const inPlantingWindow = isInPlantingWindow(crop.selectedAt);
             const plantingTime = formatCountdown(getPlantingDeadline(crop.selectedAt));
-            // tick forces re-render every second for countdowns
             void tick;
             const readyToHarvest = isReadyToHarvest(crop.expectedHarvestDate);
 
@@ -354,7 +351,7 @@ export function CropSlots() {
                   {inPlantingWindow ? (
                     <div className="flex flex-1 flex-col items-center justify-center gap-1 py-2">
                       <Clock9 className="size-4 text-amber-400" />
-                      <p className="text-center font-mono text-[10px] text-amber-400 sm:text-xs">
+                      <p className="text-center font-mono text-[10px] text-amber-400 sm:text-xs shimmer shimmer-color-blue-500/60">
                         {plantingTime} para la siembra
                       </p>
                     </div>
