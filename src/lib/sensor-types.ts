@@ -62,6 +62,6 @@ export const statusColor: Record<SensorStatus, string> = {
 
 export const statusLabel: Record<SensorStatus, string> = {
   optimal: 'Óptimo',
-  warning: 'Atención',
+  warning: 'Nivelando',
   critical: 'Crítico',
 };
