@@ -1,6 +1,9 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { AnimatePresence } from 'framer-motion'
 import { CreditCard, Gear, SignOut, User } from '@phosphor-icons/react'
+import { useNavigate } from 'react-router-dom'
+import { useAuth, useUserProfile } from '@/context/AuthContext'
+import { UserAvatar } from '@/components/common/user-avatar'
 
 export type GlassUserMenuUser = {
   name: string
@@ -12,6 +15,7 @@ type MenuItemDef = {
   icon: typeof User
   label: string
   color: string
+  to?: string
 }
 
 type MenuGroupDef = {
@@ -22,9 +26,9 @@ type MenuGroupDef = {
 const MENU_GROUPS: MenuGroupDef[] = [
   {
     items: [
-      { icon: User, label: 'Perfil', color: '#3A86FF' },
-      { icon: Gear, label: 'Ajustes', color: '#B388FF' },
-      { icon: CreditCard, label: 'Membresías', color: '#FFBE0B' },
+      { icon: User, label: 'Perfil', color: '#3A86FF', to: '/perfil' },
+      { icon: Gear, label: 'Ajustes', color: '#B388FF', to: '/ajustes' },
+      { icon: CreditCard, label: 'Membresías', color: '#FFBE0B', to: '/membresias' },
     ],
   },
 ]
@@ -44,7 +48,7 @@ function MenuItem({
     <button
       type="button"
       onClick={onClick}
-      className="flex w-full items-center gap-2.5 rounded-xl px-3 py-2.5 text-left"
+      className="cursor-pointer flex w-full items-center gap-2.5 rounded-xl px-3 py-2.5 text-left"
       style={{ minHeight: 44, background: 'transparent' }}
     >
       <div
@@ -70,7 +74,7 @@ function LogOutItem({ onClick }: { onClick: () => void }) {
     <button
       type="button"
       onClick={onClick}
-      className="flex w-full items-center gap-2.5 rounded-xl px-3 py-2.5 text-left"
+      className="cursor-pointer flex w-full items-center gap-2.5 rounded-xl px-3 py-2.5 text-left"
       style={{ minHeight: 44, background: 'transparent' }}
     >
       <div
@@ -91,15 +95,18 @@ function LogOutItem({ onClick }: { onClick: () => void }) {
   )
 }
 
-export default function GlassUserMenu({
-  user,
-  onLogout,
-}: {
-  user: GlassUserMenuUser
-  onLogout?: () => void
-}) {
+export default function GlassUserMenu() {
   const [open, setOpen] = useState(false)
   const ref = useRef<HTMLDivElement | null>(null)
+
+  const { user, logout } = useAuth()
+  const profile = useUserProfile()
+  const navigate = useNavigate()
+
+  const handleLogout = async () => {
+    await logout()
+    navigate('/ingresar', { replace: true })
+  }
 
   useEffect(() => {
     if (!open) return
@@ -146,8 +153,17 @@ export default function GlassUserMenu({
         style={{ boxShadow: open ? '0 0 0 1px rgba(255,255,255,0.25), 0 8px 30px rgba(0,0,0,0.35)' : undefined }}
       >
         <div className="pointer-events-none absolute inset-0 z-[-1] rounded-full glass"  />
-        <img src={user.avatar} alt={user.name} className="h-8 w-8 shrink-0 rounded-full object-cover" />
-        <span className="text-sm font-semibold text-white/80">{user.name}</span>
+        
+        <UserAvatar
+          avatarUrl={profile?.avatar_url}
+          username={profile?.username}
+          email={user?.email}
+          size="sm"
+        />
+        
+        <span className="text-sm font-semibold text-white/80">
+          {profile?.username || user?.email?.split('@')[0]}
+        </span>
         <span className="text-white/40">▾</span>
       </button>
 
@@ -156,6 +172,12 @@ export default function GlassUserMenu({
           <div
             className="absolute right-0 top-full mt-2 w-[min(280px,calc(100vw-32px))] rounded-2xl p-2 glass-strong"
           >
+            {profile?.full_name && (
+              <div className="px-3 py-1.5 text-xs text-white/50 border-b border-white/5 mb-1 truncate">
+                {profile.full_name}
+              </div>
+            )}
+
             <div
               className="absolute bottom-6 left-0 top-6 w-[1px]"
             />
@@ -172,7 +194,8 @@ export default function GlassUserMenu({
                     label={item.label}
                     color={item.color}
                     onClick={() => {
-                      // TODO: hook actions if needed
+                      const targetPath = item.to || `/${item.label.toLowerCase()}` 
+                      navigate(targetPath)
                       setOpen(false)
                     }}
                   />
@@ -185,7 +208,7 @@ export default function GlassUserMenu({
             <LogOutItem
               onClick={() => {
                 setOpen(false)
-                onLogout?.()
+                handleLogout()
               }}
             />
           </div>
@@ -194,4 +217,3 @@ export default function GlassUserMenu({
     </div>
   )
 }
-

@@ -14,14 +14,18 @@ export type SensorMetric = {
 
 export type ReadingPoint = {
   time: string;
-  ph: number;
-  temp: number;
-  nitrates: number;
-  oxygen: number;
+  ph?: number;
+  ec?: number;
+  water_temp?: number;
+  ambient_temp?: number;
+  humidity?: number;
+  light?: number;
+  nutrients?: number;
 };
 
 export type CropSlot = {
   id: string;
+  plant_id: string;
   name: string;
   variety: string;
   rack: string;
@@ -29,7 +33,9 @@ export type CropSlot = {
   progress: number;
   daysToHarvest: number;
   health: SensorStatus;
-  image: string;
+  image: string | null;
+  selectedAt: string;
+  expectedHarvestDate: string;
 };
 
 export type ActivityEvent = {
@@ -56,6 +62,6 @@ export const statusColor: Record<SensorStatus, string> = {
 
 export const statusLabel: Record<SensorStatus, string> = {
   optimal: 'Óptimo',
-  warning: 'Atención',
+  warning: 'Nivelando',
   critical: 'Crítico',
 };

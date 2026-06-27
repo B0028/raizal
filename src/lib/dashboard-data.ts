@@ -1,52 +1,5 @@
 import type { ActivityEvent, CropSlot } from '@/lib/sensor-types';
 
-export const cropSlots: CropSlot[] = [
-  {
-    id: 'slot-01',
-    name: 'Lechuga Mantecosa',
-    variety: 'Lactuca sativa',
-    rack: 'Rack A',
-    level: 2,
-    progress: 82,
-    daysToHarvest: 4,
-    health: 'optimal',
-    image: '/crops/lettuce.png',
-  },
-  {
-    id: 'slot-02',
-    name: 'Albahaca Genovesa',
-    variety: 'Ocimum basilicum',
-    rack: 'Rack A',
-    level: 3,
-    progress: 64,
-    daysToHarvest: 9,
-    health: 'optimal',
-    image: '/crops/basil.png',
-  },
-  {
-    id: 'slot-03',
-    name: 'Kale Rizado',
-    variety: 'Brassica oleracea',
-    rack: 'Rack B',
-    level: 1,
-    progress: 45,
-    daysToHarvest: 16,
-    health: 'warning',
-    image: '/crops/kale.png',
-  },
-  {
-    id: 'slot-04',
-    name: 'Fresa Albión',
-    variety: 'Fragaria × ananassa',
-    rack: 'Rack B',
-    level: 4,
-    progress: 91,
-    daysToHarvest: 2,
-    health: 'optimal',
-    image: '/crops/strawberry.png',
-  },
-];
-
 export const activityFeed: ActivityEvent[] = [
   {
     id: 'a1',
@@ -81,18 +34,8 @@ export const activityFeed: ActivityEvent[] = [
   },
 ];
 
-export const memberPlan = {
-  name: 'Carrie F Miller',
-  email: 'jerrod_hah4@hotmail.com',
-  avatar: 'ramdom-user-placeholder.jpg',
-  tier: 'Membresía Cultivador',
-  slotsUsed: 4,
-  slotsTotal: 12,
-  renewsOn: '12 jul 2026',
-};
-
 export const resourceStats = [
-  { label: 'Agua ahorrada vs. cultivo tradicional', value: 92, suffix: '%' },
-  { label: 'Kilómetros de transporte evitados', value: 340, suffix: 'km' },
-  { label: 'Energía renovable utilizada', value: 78, suffix: '%' },
+  { label: 'Agua ahorrada vs. cultivo tradicional', value: 92, suffix: '%' , type:"water"},
+  { label: 'Kilómetros de transporte evitados', value: 340, suffix: 'km', type:"transport"},
+  { label: 'Energía renovable utilizada', value: 78, suffix: '%' , type:"energy"},
 ];
