@@ -31,12 +31,10 @@ function groupByCategory(list: Plant[]): Record<string, Plant[]> {
 function getPlantImage(imageUrl: string | null): string {
   if (!imageUrl) return '/placeholder.png';
 
-  // Si la URL ya es una ruta relativa válida
   if (imageUrl.startsWith('/crops/')) {
     return imageUrl;
   }
 
-  // Si es solo el nombre del archivo
   if (imageUrl && !imageUrl.startsWith('/')) {
     return `/crops/${imageUrl}`;
   }
@@ -53,12 +51,10 @@ export function CropSelectModal({
 }: CropSelectModalProps) {
   const { plants, loading } = usePlants();
   const [mounted, setMounted] = useState(false);
-  // Mapa plant_id → cantidad seleccionada
   const [counts, setCounts] = useState<Record<string, number>>({});
 
   useEffect(() => { setMounted(true); }, []);
 
-  // Resetear selección cada vez que el modal se abre
   useEffect(() => {
     if (open) setCounts({});
   }, [open]);
@@ -90,7 +86,6 @@ export function CropSelectModal({
   }
 
   function handleConfirm() {
-    // Obtener los IDs de plantas y expandir según cantidad
     const plantIds: string[] = [];
     for (const [plantId, qty] of Object.entries(counts)) {
       for (let i = 0; i < qty; i++) {
@@ -101,7 +96,6 @@ export function CropSelectModal({
     onClose();
   }
 
-  // Resumen de lo seleccionado para el footer
   const selectionSummary = Object.entries(counts)
     .filter(([, qty]) => qty > 0)
     .map(([plantId, qty]) => {
@@ -111,7 +105,7 @@ export function CropSelectModal({
 
   return createPortal(
     <div className="fixed inset-0 z-50 flex items-end justify-center sm:items-center p-0 sm:p-6">
-      {/* Backdrop */}
+
       <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" />
 
       {/* Panel */}
@@ -200,7 +194,7 @@ export function CropSelectModal({
                         </div>
                       </div>
 
-                      {/* Check + Badge cantidad */}
+                      {/* Cantidad */}
                       <div className="flex flex-col items-center gap-1 shrink-0">
                         {isSelected ? (
                           <span className="flex size-5 items-center justify-center rounded-full bg-primary">
@@ -219,7 +213,7 @@ export function CropSelectModal({
                         )}
                       </div>
 
-                      {/* ButtonGroup vertical +/- */}
+                      {/* +/- */}
                       <div className="flex flex-col shrink-0 rounded-lg border border-border overflow-hidden">
                         <button
                           type="button"

@@ -34,16 +34,6 @@ export const activityFeed: ActivityEvent[] = [
   },
 ];
 
-export const memberPlan = {
-  name: 'Carrie F Miller',
-  email: 'jerrod_hah4@hotmail.com',
-  avatar: 'ramdom-user-placeholder.jpg',
-  tier: 'Membresía Cultivador',
-  slotsUsed: 4,
-  slotsTotal: 12,
-  renewsOn: '12 jul 2026',
-};
-
 export const resourceStats = [
   { label: 'Agua ahorrada vs. cultivo tradicional', value: 92, suffix: '%' , type:"water"},
   { label: 'Kilómetros de transporte evitados', value: 340, suffix: 'km', type:"transport"},

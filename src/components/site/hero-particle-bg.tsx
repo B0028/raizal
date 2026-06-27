@@ -317,7 +317,7 @@ function Scene({ src }: { src: string }) {
 const LazyScene = React.lazy(() => Promise.resolve({ default: Scene }));
 
 export default function HeroParticleBg({
-  src = '/circle-of-green-grass-on-transparent-background.png',
+  src = '/hero-green.png',
 }: { src?: string } = {}) {
   return (
     <div className="flex w-full h-full bg-transparent">

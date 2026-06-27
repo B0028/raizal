@@ -1,11 +1,14 @@
-import { memberPlan } from '@/lib/dashboard-data';
 import { Crown } from 'lucide-react';
 import { useUserSubscription } from '@/hooks/use-user-subscription';
 
 export function MembershipPanel() {
   const { slotsTotal, slotsUsed, endDate, planName } = useUserSubscription();
   const slotPct = (slotsUsed / slotsTotal) * 100;
-
+  const planLabels = {
+    Básico: "Semilla (Básico)",
+    Intermedio: "Cosecha (Intermedio)",
+    Premium: "Huerto (Premium)",
+  };
 
   return (
     <>
@@ -16,7 +19,7 @@ export function MembershipPanel() {
               <Crown className="size-4.5 text-amber" />
             </span>
             <div>
-              <p className="text-sm font-semibold">{planName}</p>
+              <p className="text-sm font-semibold">Plan {planLabels[planName] || ""}</p>
               <p className="font-mono text-[11px] text-muted-foreground">
                 Renueva el {endDate}
               </p>

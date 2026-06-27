@@ -31,7 +31,7 @@ export function LoginForm({ className, ...props }: React.ComponentPropsWithoutRe
         password,
       })
       if (error) throw error
-      // Redirect to dashboard after successful login
+      // Redirigir a dashboard luego del login
       location.href = '/dashboard'
     } catch (error: unknown) {
       setError(error instanceof Error ? error.message : 'An error occurred')

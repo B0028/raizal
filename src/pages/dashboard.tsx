@@ -5,7 +5,7 @@ import { CropSlots } from '@/components/dashboard/crop-slots';
 import { MembershipPanel } from '@/components/dashboard/membership-panel';
 import { ImpactPanel } from '@/components/dashboard/impact-panel';
 import { Unplug } from 'lucide-react';
-import {ActivityLog} from '@/components/dashboard/activity-log'
+import { ActivityLog } from '@/components/dashboard/activity-log'
 
 export function DashboardPage() {
   const { metrics: rackMetrics, history } = useRackMetrics();

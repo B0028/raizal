@@ -351,7 +351,7 @@ export function CropSlots() {
                   {inPlantingWindow ? (
                     <div className="flex flex-1 flex-col items-center justify-center gap-1 py-2">
                       <Clock9 className="size-4 text-amber-400" />
-                      <p className="text-center font-mono text-[10px] text-amber-400 sm:text-xs shimmer shimmer-color-blue-500/60">
+                      <p className="text-center font-mono text-[10px] text-amber-400 sm:text-xs">
                         {plantingTime} para la siembra
                       </p>
                     </div>
@@ -359,7 +359,7 @@ export function CropSlots() {
                     <div className="flex flex-1 items-center justify-center py-2">
                       <Button
                         size="sm"
-                        className="w-full max-w-[10rem] bg-emerald-600 font-heading text-sm hover:bg-emerald-700"
+                        className="w-full max-w-[10rem] bg-emerald-600 font-heading text-sm hover:bg-emerald-700 cursor-pointer"
                         onClick={() => handleHarvest(crop.id)}
                         disabled={isSaving && harvestingId === crop.id}
                       >
