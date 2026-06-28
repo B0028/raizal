@@ -1,7 +1,6 @@
 import { Link } from 'react-router-dom';
 import { ArrowRight, Sprout, Activity } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import StatusIndicator from "@/components/ui/status-indicator";
 
 export function ProductIntro() {
   return (
@@ -21,25 +20,7 @@ export function ProductIntro() {
             forma de consumir.{' '}
             <b>Tecnología, ecología y comunidad cultivando el futuro.</b>
           </p>
-            <div className="mt-8 flex flex-col gap-3 sm:flex-row">
-            <Button asChild size="lg" className="pointer-events-auto flex flex-col-2">
-              <ArrowRight className="h-4 w-4" />
-                Comienza a cultivar
-              <Link to="/registro">
-              </Link>
-            </Button>
-            <Button
-              asChild
-              size="lg"
-              variant="outline"
-              className="pointer-events-auto flex flex-col-2"
-            >
-              <Link to="/dashboard">
-                <StatusIndicator state="active" size="sm" label="Demo en vivo" />
-              </Link>
-            </Button>
-          </div>
-
+ 
           <dl className="mt-12 grid max-w-auto grid-cols-4 gap-6">
             {[
               { value: '95%', label: 'Menos agua' },

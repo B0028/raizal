@@ -2,6 +2,7 @@ import { Link } from 'react-router-dom';
 import { ArrowRight, Sprout, Activity } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import HeroParticleBg from '@/components/site/hero-particle-bg';
+import StatusIndicator from "@/components/ui/status-indicator";
 
 export function Hero() {
   return (
@@ -24,11 +25,11 @@ export function Hero() {
             inteligente. Siembra, monitorea y cosecha alimentos frescos en casa,
             sin tierra y con datos en tiempo real.
           </p>
-          <div className="mt-8 flex flex-col gap-3 sm:flex-row">
+         <div className="mt-8 flex flex-col gap-3 sm:flex-row">
             <Button asChild size="lg" className="pointer-events-auto flex flex-col-2">
               <ArrowRight className="h-4 w-4" />
+                Comienza a cultivar
               <Link to="/registro">
-                Comienza tu huerto
               </Link>
             </Button>
             <Button
@@ -37,9 +38,8 @@ export function Hero() {
               variant="outline"
               className="pointer-events-auto flex flex-col-2"
             >
-                <Activity className="h-4 w-4" />
               <Link to="/dashboard">
-                Panel en vivo
+                <StatusIndicator state="active" size="sm" label="Demo en vivo" />
               </Link>
             </Button>
           </div>
