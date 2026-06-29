@@ -4,6 +4,9 @@ import { Menu, X } from "lucide-react"
 import { Logo } from "./logo"
 import { Button } from "@/components/ui/button"
 import { cn } from "@/lib/utils"
+import { useAuth } from "@/context/AuthContext"
+import GlassUserMenu from '@/components/ui/glass-user-menu'
+import StatusIndicator from "@/components/ui/status-indicator";
 
 const navLinks = [
   { label: "Inicio", to: "/" },
@@ -15,15 +18,16 @@ const navLinks = [
 export function Navbar() {
   const [open, setOpen] = useState(false)
   const { pathname } = useLocation()
+  const { user } = useAuth()
 
   return (
     <header className="sticky top-0 z-50 border-b border-border/60 bg-background/70 backdrop-blur-xl">
-      <div className="mx-auto flex h-16 items-center justify-between px-4 sm:px-6 lg:px-8">
+      <div className="mx-auto grid h-16 grid-cols-[1fr_auto_1fr] items-center px-4 sm:px-6 lg:px-8">
         <Link to="/" aria-label="Raizal inicio">
           <Logo />
         </Link>
 
-        <nav className="hidden items-center gap-1 md:flex" aria-label="Principal">
+        <nav className="hidden items-center justify-center gap-1 md:flex" aria-label="Principal">
           {navLinks.map((link) => (
             <Link
               key={link.to}
@@ -38,13 +42,26 @@ export function Navbar() {
           ))}
         </nav>
 
-        <div className="hidden items-center gap-2 md:flex">
-          <Button asChild size="sm" variant="outline">
-            <Link to="/ingresar">Ingresar</Link>
-          </Button>
-          <Button asChild size="sm">
-            <Link to="/registro">Crear cuenta</Link>
-          </Button>
+        <div className="hidden items-center justify-end gap-2 md:flex">
+          {user ? (
+            <>
+              <Button asChild size="lg" variant="secondary">  
+                <Link to="/dashboard">
+                  <StatusIndicator state="active" size="sm" label="Dashboard"/> 
+                </Link>  
+              </Button>    
+              <GlassUserMenu />  
+            </> 
+          ) : (  
+            <>  
+              <Button asChild size="sm" variant="outline">  
+                <Link to="/ingresar">Ingresar</Link>  
+              </Button>  
+              <Button asChild size="sm">  
+                <Link to="/registro">Crear cuenta</Link>  
+              </Button>  
+            </>  
+          )}  
         </div>
 
         <button
@@ -73,17 +90,23 @@ export function Navbar() {
                 {link.label}
               </Link>
             ))}
-            <div className="mt-2 flex flex-col gap-2">
-              <Button asChild variant="outline" size="sm">
-                <Link to="/ingresar" onClick={() => setOpen(false)}>
-                  Ingresar
-                </Link>
-              </Button>
-              <Button asChild size="sm">
-                <Link to="/registro" onClick={() => setOpen(false)}>
-                  Crear cuenta
-                </Link>
-              </Button>
+            <div className="mt-2 flex flex-col gap-2">  
+              {user ? (  
+                <GlassUserMenu />  
+              ) : (  
+                <>  
+                  <Button asChild variant="outline" size="sm">  
+                    <Link to="/ingresar" onClick={() => setOpen(false)}>  
+                      Ingresar  
+                    </Link>  
+                  </Button>  
+                  <Button asChild size="sm">  
+                    <Link to="/registro" onClick={() => setOpen(false)}>  
+                      Crear cuenta  
+                    </Link>  
+                  </Button>  
+                </>  
+              )}  
             </div>
           </nav>
         </div>

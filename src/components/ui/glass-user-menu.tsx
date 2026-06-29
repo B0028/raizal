@@ -48,21 +48,21 @@ function MenuItem({
     <button
       type="button"
       onClick={onClick}
-      className="cursor-pointer flex w-full items-center gap-2.5 rounded-xl px-3 py-2.5 text-left"
-      style={{ minHeight: 44, background: 'transparent' }}
+      className="cursor-pointer flex w-full items-center gap-2.5 rounded-xl px-3 py-1.5 text-left transition-colors hover:bg-white/15"
+      style={{ minHeight: 36 }}
     >
       <div
         className="flex shrink-0 items-center justify-center rounded-xl"
         style={{
           width: 32,
           height: 32,
-          background: `${color}18`,
-          border: `1px solid ${color}22`,
+          background: `${color}2E`,
+          border: `1px solid ${color}40`,
         }}
       >
         <Icon size={16} weight="regular" style={{ color }} />
       </div>
-      <span className="text-sm font-medium" style={{ color: 'rgba(255,255,255,0.75)' }}>
+      <span className="text-sm font-medium" style={{ color: 'rgba(255,255,255,0.92)' }}>
         {label}
       </span>
     </button>
@@ -74,8 +74,8 @@ function LogOutItem({ onClick }: { onClick: () => void }) {
     <button
       type="button"
       onClick={onClick}
-      className="cursor-pointer flex w-full items-center gap-2.5 rounded-xl px-3 py-2.5 text-left"
-      style={{ minHeight: 44, background: 'transparent' }}
+      className="cursor-pointer flex w-full items-center gap-2.5 rounded-xl px-3 py-1.5 text-left transition-colors hover:bg-destructive/15"
+      style={{ minHeight: 36 }}
     >
       <div
         className="flex shrink-0 items-center justify-center rounded-xl"
@@ -88,7 +88,7 @@ function LogOutItem({ onClick }: { onClick: () => void }) {
       >
         <SignOut size={16} weight="regular" style={{ color: '#FF5A5A' }} />
       </div>
-      <span className="text-sm font-medium" style={{ color: 'rgba(255,90,90,0.8)' }}>
+      <span className="text-sm font-medium text-destructive">
         Cerrar sesión
       </span>
     </button>
@@ -149,19 +149,19 @@ export default function GlassUserMenu() {
         type="button"
         onClick={() => setOpen((v) => !v)}
         aria-label="User menu"
-        className="flex items-center gap-2 rounded-full border border-border bg-foreground/5 px-3 py-1.5 transition-colors hover:bg-foreground/10"
+        className="flex items-center gap-2 rounded-lg border border-border bg-foreground/5 px-3 py-1 transition-colors hover:bg-foreground/10"
         style={{ boxShadow: open ? '0 0 0 1px rgba(255,255,255,0.25), 0 8px 30px rgba(0,0,0,0.35)' : undefined }}
       >
-        <div className="pointer-events-none absolute inset-0 z-[-1] rounded-full glass"  />
+        <div className="pointer-events-none absolute inset-0 z-[-1] rounded-lg glass"/>
         
         <UserAvatar
           avatarUrl={profile?.avatar_url}
           username={profile?.username}
           email={user?.email}
-          size="sm"
+          size="xs"
         />
         
-        <span className="text-sm font-semibold text-white/80">
+        <span className="text-sm font-semibold text-white/80 capitalize">
           {profile?.username || user?.email?.split('@')[0]}
         </span>
         <span className="text-white/40">▾</span>
@@ -170,7 +170,8 @@ export default function GlassUserMenu() {
       <AnimatePresence>
         {open && (
           <div
-            className="absolute right-0 top-full mt-2 w-[min(280px,calc(100vw-32px))] rounded-2xl p-2 glass-strong"
+            className="absolute right-0 top-full mt-2 w-[min(280px,calc(100vw-32px))] rounded-2xl p-2 glass-strong bg-secondary"
+           
           >
             {profile?.full_name && (
               <div className="px-3 py-1.5 text-xs text-white/50 border-b border-white/5 mb-1 truncate">

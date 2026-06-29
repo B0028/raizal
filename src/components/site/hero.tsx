@@ -3,8 +3,10 @@ import { ArrowRight, Sprout, Activity } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import HeroParticleBg from '@/components/site/hero-particle-bg';
 import StatusIndicator from "@/components/ui/status-indicator";
+import { useAuth } from "@/context/AuthContext"
 
 export function Hero() {
+  const { user } = useAuth()
   return (
     <section className="relative overflow-hidden w-full h-screen">
       <div className="absolute inset-0 w-full h-full z-0 pointer-events-auto">
@@ -26,22 +28,29 @@ export function Hero() {
             sin tierra y con datos en tiempo real.
           </p>
          <div className="mt-8 flex flex-col gap-3 sm:flex-row">
-            <Button asChild size="lg" className="pointer-events-auto flex flex-col-2">
-              <ArrowRight className="h-4 w-4" />
-                Comienza a cultivar
-              <Link to="/registro">
-              </Link>
-            </Button>
-            <Button
-              asChild
-              size="lg"
-              variant="outline"
-              className="pointer-events-auto flex flex-col-2"
-            >
-              <Link to="/dashboard">
-                <StatusIndicator state="active" size="sm" label="Demo en vivo" />
-              </Link>
-            </Button>
+            {user ? (
+              <>
+              </> 
+            ) : (  
+              <>
+                <Button asChild size="lg" className="pointer-events-auto flex flex-col-2">
+                  <ArrowRight className="h-4 w-4" />
+                    Comienza a cultivar
+                  <Link to="/registro">
+                  </Link>
+                </Button>
+                <Button
+                  asChild
+                  size="lg"
+                  variant="outline"
+                  className="pointer-events-auto flex flex-col-2"
+                >
+                  <Link to="/dashboard">
+                    <StatusIndicator state="active" size="sm" label="Demo en vivo" />
+                  </Link>
+                </Button>
+              </>
+            )}    
           </div>
         </div>
       </div>

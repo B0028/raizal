@@ -1,12 +1,14 @@
 import { Link, Outlet } from 'react-router-dom'
 import { Logo } from '@/components/site/logo'
+import { ChevronLeft } from 'lucide-react';
 
 export function AuthLayout() {
   return (
     <div className="grid min-h-screen lg:grid-cols-2">
       {/* form side */}
       <div className="flex flex-col px-4 py-8 sm:px-8 lg:px-16">
-        <Link to="/" aria-label="Raizal inicio">
+        <Link to="/" aria-label="Raizal inicio" className="group flex items-center gap-1">
+          <ChevronLeft className="size-7 text-muted-foreground transition-all group-hover:-translate-x-1 group-hover:text-foreground"/>
           <Logo />
         </Link>
 

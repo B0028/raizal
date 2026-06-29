@@ -1,6 +1,6 @@
 import { Bell, Leaf } from 'lucide-react';
-import GlassUserMenu from '@/components/ui/glass-user-menu'
 import { useAuth, useUserProfile } from '@/context/AuthContext'
+import { UserAvatar } from '@/components/common/user-avatar'
 
 export function DashboardTopbar({ lastUpdate }: { lastUpdate: Date | null }) {
   const { user, logout } = useAuth()
@@ -23,16 +23,16 @@ export function DashboardTopbar({ lastUpdate }: { lastUpdate: Date | null }) {
       </div>
 
       <div className="hidden flex-col lg:flex">
-        <h1 className="font-heading text-lg font-semibold tracking-tight">
+        <h1 className="font-heading text-lg font-semibold tracking-tight capitalize">
           Hola, {profile?.username || user?.email?.split('@')[0]}
         </h1>
         <p className="text-xs text-muted-foreground">Bienvenido</p>
       </div>
 
       <div className="ml-auto flex items-center gap-3">
-        <div className="hidden items-center gap-2 rounded-full border border-border bg-foreground/5 px-3 py-1.5 md:flex">
+        <div className="hidden items-center gap-2 rounded-full border border-border bg-foreground/5 px-3 py-2 md:flex">
           <span className="size-1.5 rounded-full bg-primary" />
-          <span className="font-mono text-[11px] text-muted-foreground">
+          <span className="font-mono text-xs text-muted-foreground">
             Actualizado {time}
           </span>
         </div>
@@ -43,7 +43,13 @@ export function DashboardTopbar({ lastUpdate }: { lastUpdate: Date | null }) {
           <Bell className="size-4" />
           <span className="absolute right-2 top-2 size-1.5 rounded-full bg-amber" />
         </button>
-        <GlassUserMenu /> 
+
+          <UserAvatar
+            avatarUrl={profile?.avatar_url}
+            username={profile?.username}
+            email={user?.email}
+            size="sm"
+          />
 
       </div>
     </header>
