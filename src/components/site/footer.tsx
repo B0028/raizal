@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom';
+import { HashLink } from "react-router-hash-link";
 import { Send, AtSign, Globe, Leaf } from 'lucide-react';
 import { Logo } from './logo';
 
@@ -62,12 +63,22 @@ export function Footer() {
               <ul className="mt-4 flex flex-col gap-3">
                 {col.links.map((link) => (
                   <li key={link.label}>
-                    <Link
-                      to={link.to}
-                      className="text-sm text-muted-foreground transition-colors hover:text-foreground"
-                    >
-                      {link.label}
-                    </Link>
+                    {link.to.includes("#") ? (
+                      <HashLink 
+                        smooth to={link.to}
+                        className="text-sm text-muted-foreground transition-colors hover:text-foreground"
+                      >
+                        {link.label}
+                      </HashLink>
+                    ) : (
+                      <Link
+                        key={link.label}    
+                        to={link.to}
+                        className="text-sm text-muted-foreground transition-colors hover:text-foreground"
+                      >
+                        {link.label}
+                      </Link>
+                    )}
                   </li>
                 ))}
               </ul>

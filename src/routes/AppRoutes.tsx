@@ -27,7 +27,6 @@ function ScrollToTop() {
 export default function AppRoutes() {
   return (
     <>
-      <ScrollToTop />
       <Routes>
         {/* Sitio público */}
         <Route element={<SiteLayout />}>
