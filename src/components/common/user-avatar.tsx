@@ -2,11 +2,12 @@ interface UserAvatarProps {
   avatarUrl?: string
   username?: string
   email?: string
-  size?: 'sm' | 'md' | 'lg'
+  size?: 'xs' | 'sm' | 'md' | 'lg'
 }
 
 const sizeClasses = {
-  sm: 'size-8',
+  xs: 'size-6',
+  sm: 'size-9',
   md: 'size-10',
   lg: 'size-12',
 }

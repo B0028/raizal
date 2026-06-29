@@ -1,7 +1,8 @@
 import { useState } from 'react';
 import { cn } from '@/lib/utils';
 import { Logo } from "../site/logo"
-import { Link } from "react-router-dom"
+import { Link, useNavigate } from "react-router-dom"
+import { useAuth } from '@/context/AuthContext'
 
 import {
   LayoutDashboard,
@@ -12,7 +13,10 @@ import {
   Settings,
   LifeBuoy,
   Leaf,
+  LogOut,
+  ChevronLeft,
 } from 'lucide-react';
+import { CreditCard, SignOut, User } from '@phosphor-icons/react'
 
 const nav = [
   { id: 'overview', label: 'Resumen', icon: LayoutDashboard },
@@ -23,18 +27,27 @@ const nav = [
 ];
 
 const secondary = [
+  { id: 'profile', label: 'Perfil', icon: User }, 
+  { id: 'membership', label: 'Membresías', icon: CreditCard }, 
+  { id: 'support', label: 'Soporte', icon: LifeBuoy }, 
   { id: 'settings', label: 'Ajustes', icon: Settings },
-  { id: 'support', label: 'Soporte', icon: LifeBuoy },
 ];
 
 export function DashboardSidebar() {
   const [active, setActive] = useState('overview');
+  const { logout } = useAuth()
+  const navigate = useNavigate()
+  const handleLogout = async () => {  
+    await logout()  
+    navigate('/ingresar', { replace: true })  
+  }
 
   return (
     <aside className="glass-strong sticky top-0 hidden h-screen w-64 shrink-0 flex-col border-r border-border p-5 lg:flex">
       <div className="flex items-center gap-2.5 px-1 pb-8">
         <div className="leading-none">
-          <Link to="/" aria-label="Raizal inicio">
+          <Link to="/" aria-label="Raizal inicio" className="group flex items-center gap-1">
+            <ChevronLeft className="size-6 text-muted-foreground transition-all group-hover:-translate-x-0.5 group-hover:text-foreground"/>
             <Logo />
           </Link>
         </div>
@@ -93,6 +106,16 @@ export function DashboardSidebar() {
           );
         })}
       </nav>
+      <div className="mt-2 border-t border-border pt-2">  
+        <button  
+          type="button"  
+          onClick={handleLogout}  
+          className="flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium text-muted-foreground transition-colors cursor-pointer hover:bg-destructive/15 hover:text-foreground"  
+        >  
+          <LogOut className="size-4.5" />  
+          Cerrar sesión  
+        </button>  
+      </div>
     </aside>
   );
 }
