@@ -34,11 +34,11 @@ export function AnimatedGridPattern({
   x = -1,
   y = -1,
   strokeDasharray = 0,
-  numSquares = 50,
+  numSquares = 200,
   className,
   maxOpacity = 0.5,
-  duration = 4,
-  repeatDelay = 0.5,
+  duration = 1,
+  repeatDelay = 0.2,
   ...props
 }: AnimatedGridPatternProps) {
   const id = useId()

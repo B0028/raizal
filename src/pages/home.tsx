@@ -8,17 +8,19 @@ import { AnimatedGridPattern } from "@/components/ui/animated-grid-pattern"
 
 export default function HomePage() {
   return (
-    <>
-      <AnimatedGridPattern maxOpacity={0.3} className="
-    absolute inset-0
+    <div className="relative isolate">
+      <AnimatedGridPattern maxOpacity={0.4} className="
+    absolute inset-0 z-0 h-full w-full
     bg-[radial-gradient(circle_at_center,rgba(0,0,0,1)_0%,rgba(0,0,0,0.2)_70%)]
-    pointer-events-none h-screen" />
-      <Hero />
-      <ProductIntro />
-      <Features />
-      <HowItWorks />
-      <Membership />
-      <JoinSection />
-    </>
+    pointer-events-none" />
+      <div className="relative z-10">  
+        <Hero />
+        <ProductIntro />
+        <Features />
+        <HowItWorks />
+        <Membership />
+        <JoinSection />
+      </div>
+    </div>
   );
 }

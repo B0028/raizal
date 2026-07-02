@@ -37,7 +37,7 @@ export function Features() {
   return (
     <section
       id="como-funciona"
-      className="border-t border-b border-border/60 bg-card/20"
+      className="border-t border-b border-border/90 bg-card/30"
     >
       <div className="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:py-24 lg:px-8">
         <div className="mx-auto max-w-2xl text-center">
