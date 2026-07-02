@@ -15,6 +15,8 @@ import RegisterPage from '@/pages/register';
 import ForgotPasswordPage from '@/pages/forgot-password';
 import UpdatePasswordPage from '@/pages/update-password';
 import { DashboardPage } from '@/pages/dashboard';
+import { ProfilePage } from '@/pages/profile';
+
 
 function ScrollToTop() {
   const { pathname } = useLocation();
@@ -53,6 +55,10 @@ export default function AppRoutes() {
           }
         >
           <Route path="/dashboard" element={<DashboardPage />} />
+          <Route path="/dashboard/perfil" element={<ProfilePage />} />
+          <Route path="/dashboard/membresías" element={<DashboardPage />} />
+          <Route path="/dashboard/soporte" element={<DashboardPage />} />
+          <Route path="/dashboard/ajustes" element={<DashboardPage />} />
         </Route>
 
         <Route path="*" element={<Navigate to="/" replace />} />

@@ -26,7 +26,7 @@ export function DashboardTopbar({ lastUpdate }: { lastUpdate: Date | null }) {
         <h1 className="font-heading text-lg font-semibold tracking-tight capitalize">
           Hola, {profile?.username || user?.email?.split('@')[0]}
         </h1>
-        <p className="text-xs text-muted-foreground">Bienvenido</p>
+        <p className="text-xs text-muted-foreground">Bienvenido a tu panel de cultivo</p>
       </div>
 
       <div className="ml-auto flex items-center gap-3">

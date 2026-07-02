@@ -1,7 +1,8 @@
 import { useState } from 'react';
 import { cn } from '@/lib/utils';
 import { Logo } from "../site/logo"
-import { Link, useNavigate } from "react-router-dom"
+import { Link, useLocation, useNavigate } from "react-router-dom"
+
 import { useAuth } from '@/context/AuthContext'
 
 import {
@@ -27,16 +28,33 @@ const nav = [
 ];
 
 const secondary = [
-  { id: 'profile', label: 'Perfil', icon: User }, 
-  { id: 'membership', label: 'Membresías', icon: CreditCard }, 
-  { id: 'support', label: 'Soporte', icon: LifeBuoy }, 
-  { id: 'settings', label: 'Ajustes', icon: Settings },
+  { id: 'profile', label: 'Perfil', icon: User, path: '/dashboard/perfil' }, 
+  { id: 'membership', label: 'Membresías', icon: CreditCard, path: '/dashboard/membresías' },
+  { id: 'support', label: 'Soporte', icon: LifeBuoy, path: '/dashboard/soporte' },
+  { id: 'settings', label: 'Ajustes', icon: Settings, path: '/dashboard/ajustes' },
 ];
+
 
 export function DashboardSidebar() {
   const [active, setActive] = useState('overview');
-  const { logout } = useAuth()
-  const navigate = useNavigate()
+  const { logout } = useAuth();
+  const navigate = useNavigate();
+  const { pathname } = useLocation();
+
+  // Mantener resaltado acorde a la ruta
+  const activeFromPath = (() => {
+    if (pathname.startsWith('/dashboard/')) {
+      const map: Record<string, string> = {
+        '/dashboard/perfil': 'profile',
+        '/dashboard/membresías': 'membership',
+        '/dashboard/soporte': 'support',
+        '/dashboard/ajustes': 'settings',
+      };
+      return map[pathname] ?? active;
+    }
+    return active;
+  })();
+
   const handleLogout = async () => {  
     await logout()  
     navigate('/ingresar', { replace: true })  
@@ -59,7 +77,8 @@ export function DashboardSidebar() {
         </p>
         {nav.map((item) => {
           const Icon = item.icon;
-          const isActive = active === item.id;
+          const isActive = (pathname.startsWith('/dashboard') ? pathname === '/dashboard' : false) ? item.id === 'overview' : activeFromPath === item.id;
+
           return (
             <button
               key={item.id}
@@ -85,11 +104,16 @@ export function DashboardSidebar() {
         </p>
         {secondary.map((item) => {
           const Icon = item.icon;
-          const isActive = active === item.id;
+          const isActive = activeFromPath === item.id;
+
           return (
             <button
               key={item.id}
-              onClick={() => setActive(item.id)}
+              onClick={() => {
+                setActive(item.id);
+                if ('path' in item && item.path) navigate(item.path);
+              }}
+
               className={cn(
                 'flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors cursor-pointer',
                 isActive

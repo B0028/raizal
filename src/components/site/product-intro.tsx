@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/button';
 
 export function ProductIntro() {
   return (
-    <section className="relative overflow-hidden w-full border-t border-border/60">
+    <section className="relative overflow-hidden w-full border-t border-border/60 bg-card/20">
       <div className="mx-auto grid max-w-7xl items-center gap-12 px-4 py-20 sm:px-6 lg:grid-cols-2 lg:gap-8 lg:py-28 lg:px-8 pointer-events-none">
         <div className="relative z-10">
           <span className="inline-flex items-center gap-2 rounded-full border border-primary/30 bg-primary/10 px-3 py-1 text-xs font-medium text-primary">

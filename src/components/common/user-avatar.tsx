@@ -2,7 +2,7 @@ interface UserAvatarProps {
   avatarUrl?: string
   username?: string
   email?: string
-  size?: 'xs' | 'sm' | 'md' | 'lg'
+  size?: 'xs' | 'sm' | 'md' | 'lg' | 'xl'
 }
 
 const sizeClasses = {
@@ -10,6 +10,7 @@ const sizeClasses = {
   sm: 'size-9',
   md: 'size-10',
   lg: 'size-12',
+  xl: 'size-16',
 }
 
 export function UserAvatar({

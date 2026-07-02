@@ -12,6 +12,13 @@ export function Hero() {
       <div className="absolute inset-0 w-full h-full z-0 pointer-events-auto">
         <HeroParticleBg />
       </div>
+      <div className="absolute bottom-6 flex items-center gap-3 rounded-xl border border-border/60 bg-background/80 p-3 backdrop-blur-xl sm:-left-6">
+        <StatusIndicator state="active" size="sm" />
+        <div>
+          <p className="text-xs text-muted-foreground">pH del sistema</p>
+          <p className="text-sm font-semibold text-foreground">6.2 · Óptimo</p>
+        </div>
+      </div>
       <div
         className="absolute -top-40 left-1/2 h-120 w-205 -translate-x-1/2 rounded-full bg-primary/15 blur-[120px] pointer-events-none"
         aria-hidden="true"

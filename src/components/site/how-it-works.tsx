@@ -23,7 +23,7 @@ const steps = [
 
 export function HowItWorks() {
   return (
-    <section className="relative overflow-hidden">
+    <section className="relative overflow-hidden bg-card/60">
       <div className="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:grid lg:grid-cols-2 lg:items-center lg:gap-16 lg:py-24 lg:px-8">
         <div className="relative">
           <div className="overflow-hidden rounded-3xl border border-border/60">

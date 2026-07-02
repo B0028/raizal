@@ -5,8 +5,10 @@ import { HowItWorks } from '@/components/site/how-it-works';
 import { Membership } from '@/components/site/membership';
 import { JoinSection } from '@/components/site/join-section';
 import { AnimatedGridPattern } from "@/components/ui/animated-grid-pattern"
+import { useAuth } from "@/context/AuthContext"
 
 export default function HomePage() {
+  const { user } = useAuth()
   return (
     <div className="relative isolate">
       <AnimatedGridPattern maxOpacity={0.4} className="
@@ -19,7 +21,7 @@ export default function HomePage() {
         <Features />
         <HowItWorks />
         <Membership />
-        <JoinSection />
+        {!user && <JoinSection />}
       </div>
     </div>
   );

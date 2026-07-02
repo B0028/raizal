@@ -9,7 +9,10 @@ export function ProtectedRoute({ children }: { children: React.ReactNode }) {
   const [transitioning, setTransitioning] = useState(true)
 
   useEffect(() => {
-    if (location.pathname !== '/dashboard') return
+    if (location.pathname !== '/dashboard') {
+      setTransitioning(false)
+      return
+    }
     setTransitioning(true)
     const timer = setTimeout(() => setTransitioning(false), 1500)
     return () => clearTimeout(timer)
