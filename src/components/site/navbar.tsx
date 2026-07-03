@@ -7,6 +7,7 @@ import { cn } from "@/lib/utils"
 import { useAuth } from "@/context/AuthContext"
 import GlassUserMenu from '@/components/ui/glass-user-menu'
 import StatusIndicator from "@/components/ui/status-indicator";
+import { ThemeToggle } from "@/components/ui/theme-toggle"
 
 const navLinks = [
   { label: "Inicio", to: "/" },
@@ -45,6 +46,7 @@ export function Navbar() {
         <div className="hidden items-center justify-end gap-2 md:flex">
           {user ? (
             <>
+              <ThemeToggle className="cursor-pointer text-muted-foreground" size="lg" />  
               <Button asChild size="lg" variant="secondary">  
                 <Link to="/dashboard">
                   <StatusIndicator state="active" size="sm" label="Dashboard"/> 
@@ -53,11 +55,12 @@ export function Navbar() {
               <GlassUserMenu />  
             </> 
           ) : (  
-            <>  
-              <Button asChild size="sm" variant="outline">  
+            <>
+              <ThemeToggle className="cursor-pointer text-muted-foreground" size="lg" />  
+              <Button asChild size="lg" variant="outline">  
                 <Link to="/ingresar">Ingresar</Link>  
               </Button>  
-              <Button asChild size="sm">  
+              <Button asChild size="lg">  
                 <Link to="/registro">Crear cuenta</Link>  
               </Button>  
             </>  

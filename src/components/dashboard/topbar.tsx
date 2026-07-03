@@ -1,6 +1,7 @@
 import { Bell, Leaf } from 'lucide-react';
 import { useAuth, useUserProfile } from '@/context/AuthContext'
 import { UserAvatar } from '@/components/common/user-avatar'
+import { ThemeToggle } from "@/components/ui/theme-toggle"
 
 export function DashboardTopbar({ lastUpdate }: { lastUpdate: Date | null }) {
   const { user, logout } = useAuth()
@@ -43,13 +44,13 @@ export function DashboardTopbar({ lastUpdate }: { lastUpdate: Date | null }) {
           <Bell className="size-4" />
           <span className="absolute right-2 top-2 size-1.5 rounded-full bg-amber" />
         </button>
-
-          <UserAvatar
-            avatarUrl={profile?.avatar_url}
-            username={profile?.username}
-            email={user?.email}
-            size="sm"
-          />
+        <ThemeToggle className="cursor-pointer rounded-full glass text-muted-foreground" size="lg" />  
+        <UserAvatar
+          avatarUrl={profile?.avatar_url}
+          username={profile?.username}
+          email={user?.email}
+          size="sm"
+        />
 
       </div>
     </header>
