@@ -5,7 +5,7 @@
 @custom-variant dark (&:is(.dark *));
 
 @theme inline {
-  --font-heading: var(--font-sans);
+  --font-heading: 'Space Grotesk', var(--font-sans);
   --font-sans: ui-sans-serif, system-ui, sans-serif, 'Outfit';
   --font-mono: ui-monospace, 'SF Mono', monospace, 'JetBrains Mono';
 
