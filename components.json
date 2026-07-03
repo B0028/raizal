@@ -21,6 +21,7 @@
   "registries": {
     "@aicanvas": "https://aicanvas.me/r/{name}.json",
     "@magicui": "https://magicui.design/r/{name}",
-    "@supabase": "https://supabase.com/ui/r/{name}.json"
+    "@supabase": "https://supabase.com/ui/r/{name}.json",
+    "@shadcnblocks": "https://shadcnblocks.com/r/{name}.json"
   }
 }

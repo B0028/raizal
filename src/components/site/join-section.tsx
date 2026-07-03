@@ -21,8 +21,8 @@ export function JoinSection() {
             <div className="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
               <Button asChild size="lg">
                 <Link to="/registro">
-                  Crear mi cuenta
                   <ArrowRight className="h-4 w-4" />
+                  Crear mi cuenta
                 </Link>
               </Button>
               <Button asChild size="lg" variant="outline">

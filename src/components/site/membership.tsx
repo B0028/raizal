@@ -1,9 +1,13 @@
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Check } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import { useAuth } from '@/context/AuthContext';
-import { supabase } from '@/lib/client';
+import {
+  CheckoutDialog,
+  type CheckoutPlan,
+} from '@/components/site/checkout-dialog';
 
 const plans = [
   {
@@ -61,44 +65,17 @@ const plans = [
 export function Membership() {
   const navigate = useNavigate();
   const { user } = useAuth();
+  const [checkoutOpen, setCheckoutOpen] = useState(false);
+  const [selectedPlan, setSelectedPlan] = useState<CheckoutPlan | null>(null);
 
-  const handleSubscribe = async (planNameDb: string, priceUyu: number) => {
+  const handleOpenCheckout = (plan: CheckoutPlan) => {
     if (!user) {
       navigate('/ingresar');
       return;
     }
 
-    try {
-      const { data: { session } } = await supabase.auth.getSession();
-      const token = session?.access_token;
-
-      if (!token) {
-        alert('Sesión inválida. Por favor, vuelve a iniciar sesión.');
-        return;
-      }
-      
-      const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:3000';
-
-      const response = await fetch(`${apiUrl}/api/subscriptions/checkout`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`,
-        },
-        body: JSON.stringify({ planNameDb, priceUyu }),
-      });
-
-      const data = await response.json();
-
-      if (!response.ok) {
-        throw new Error(data.error || 'Error al procesar en el servidor');
-      }
-
-      alert(data.message);
-    } catch (error: any) {
-      console.error('Error en el proceso:', error);
-      alert(error.message || 'Ocurrió un error inesperado al procesar la suscripción.');
-    }
+    setSelectedPlan(plan);
+    setCheckoutOpen(true);
   };
 
   return (
@@ -147,7 +124,14 @@ export function Membership() {
               <Button
                 className="mt-7 cursor-pointer"
                 variant={plan.featured ? 'default' : 'outline'}
-                onClick={() => handleSubscribe(plan.planNameDb, plan.price)}
+                onClick={() =>
+                  handleOpenCheckout({
+                    name: plan.name,
+                    planNameDb: plan.planNameDb,
+                    price: plan.price,
+                    period: plan.period,
+                  })
+                }
               >
                 {plan.cta}
               </Button>
@@ -155,6 +139,12 @@ export function Membership() {
           ))}
         </div>
       </div>
+
+      <CheckoutDialog
+        plan={selectedPlan}
+        open={checkoutOpen}
+        onOpenChange={setCheckoutOpen}
+      />
     </section>
   );
 }
