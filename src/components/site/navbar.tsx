@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { Link, useLocation } from "react-router-dom"
 import { Menu, X } from "lucide-react"
 import { Logo } from "./logo"
@@ -18,11 +18,27 @@ const navLinks = [
 
 export function Navbar() {
   const [open, setOpen] = useState(false)
+  const [scrolled, setScrolled] = useState(false)
   const { pathname } = useLocation()
   const { user } = useAuth()
 
+  useEffect(() => {
+    const onScroll = () => {
+      setScrolled(window.scrollY > 20)
+    }
+
+    onScroll()
+    window.addEventListener("scroll", onScroll, { passive: true })
+    return () => window.removeEventListener("scroll", onScroll)
+  }, [])
+
   return (
-    <header className="sticky top-0 z-50 border-b border-border/60 bg-background/70 backdrop-blur-xl">
+    <header
+      className={cn(
+        "sticky top-0 z-50",
+        scrolled ? "bg-background/70 border-b border-border/60 backdrop-blur-xl" : "bg-background/0", 
+      )}
+    >
       <div className="mx-auto grid h-16 grid-cols-[1fr_auto_1fr] items-center px-4 sm:px-6 lg:px-8">
         <Link to="/" aria-label="Raizal inicio">
           <Logo />
@@ -56,7 +72,8 @@ export function Navbar() {
             </> 
           ) : (  
             <>
-              <ThemeToggle className="cursor-pointer text-muted-foreground" size="lg" />  
+              <ThemeToggle className="cursor-pointer text-muted-foreground" size="lg" 
+              />  
               <Button asChild size="lg" variant="outline">  
                 <Link to="/ingresar">Ingresar</Link>  
               </Button>  
@@ -71,7 +88,7 @@ export function Navbar() {
           className="inline-flex h-10 w-10 items-center justify-center rounded-md text-foreground md:hidden"
           onClick={() => setOpen((v) => !v)}
           aria-label={open ? "Cerrar menú" : "Abrir menú"}
-          aria-expanded={open}
+          aria-expanded={open.toString()}
         >
           {open ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
         </button>

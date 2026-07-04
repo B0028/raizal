@@ -24,10 +24,6 @@ export default function AboutPage() {
   return (
     <>
       <section className="relative overflow-hidden border-b border-border/60">
-        <div
-          className="pointer-events-none absolute -top-32 left-1/2 h-80 w-[700px] -translate-x-1/2 rounded-full bg-primary/12 blur-[120px]"
-          aria-hidden="true"
-        />
         <div className="mx-auto max-w-3xl px-4 py-20 text-center sm:px-6 lg:py-28 lg:px-8">
           <span className="text-sm font-semibold text-primary">
             Sobre Raizal
