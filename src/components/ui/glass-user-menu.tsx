@@ -4,6 +4,7 @@ import { CreditCard, Gear, SignOut, User } from '@phosphor-icons/react'
 import { useNavigate } from 'react-router-dom'
 import { useAuth, useUserProfile } from '@/context/AuthContext'
 import { UserAvatar } from '@/components/common/user-avatar'
+import { Button } from "@/components/ui/Button"
 
 export type GlassUserMenuUser = {
   name: string
@@ -46,7 +47,7 @@ function MenuItem({
 }) {
   return (
     <button
-      type="button"
+      type="Button"
       onClick={onClick}
       className="cursor-pointer flex w-full items-center gap-2.5 rounded-xl px-3 py-1.5 text-left transition-colors hover:bg-white/15"
       style={{ minHeight: 36 }}
@@ -72,7 +73,7 @@ function MenuItem({
 function LogOutItem({ onClick }: { onClick: () => void }) {
   return (
     <button
-      type="button"
+      type="Button"
       onClick={onClick}
       className="cursor-pointer flex w-full items-center gap-2.5 rounded-xl px-3 py-1.5 text-left transition-colors hover:bg-destructive/15"
       style={{ minHeight: 36 }}
@@ -145,15 +146,15 @@ export default function GlassUserMenu() {
 
   return (
     <div ref={ref} className="relative flex items-center">
-      <button
-        type="button"
+      <Button
+        size="lg"
+        variant="outline"
         onClick={() => setOpen((v) => !v)}
         aria-label="User menu"
-        className="flex items-center gap-2 rounded-lg border border-border bg-foreground/5 px-3 py-1 transition-colors hover:bg-foreground/10"
+        className="flex items-center gap-2 rounded-lg px-3 py-1 transition-colors hover:bg-foreground/10"
         style={{ boxShadow: open ? '0 0 0 1px rgba(255,255,255,0.25), 0 8px 30px rgba(0,0,0,0.35)' : undefined }}
       >
         <div className="pointer-events-none absolute inset-0 z-[-1] rounded-lg glass"/>
-        
         <UserAvatar
           avatarUrl={profile?.avatar_url}
           username={profile?.username}
@@ -164,8 +165,8 @@ export default function GlassUserMenu() {
         <span className="text-sm font-semibold text-white/80 capitalize">
           {profile?.username || user?.email?.split('@')[0]}
         </span>
-        <span className="text-white/40">▾</span>
-      </button>
+        <span className="text-white/40 text-lg">▾</span>
+      </Button>
 
       <AnimatePresence>
         {open && (
@@ -174,7 +175,7 @@ export default function GlassUserMenu() {
            
           >
             {profile?.full_name && (
-              <div className="px-3 py-1.5 text-xs text-white/50 border-b border-white/5 mb-1 truncate">
+              <div className="px-3 py-1.5 text-lg text-white/50 border-b border-white/5 mb-1 truncate">
                 {profile.full_name}
               </div>
             )}

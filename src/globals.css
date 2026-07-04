@@ -198,3 +198,11 @@
     @apply bg-white/[0.05] backdrop-blur-md border border-white/10 shadow-sm;
   }
 }
+
+@layer utilities {
+  .text-glow {
+    text-shadow:
+      0 0 24px color-mix(in oklab, var(--leaf) 35%, transparent),
+      0 0 60px color-mix(in oklab, var(--leaf) 15%, transparent);
+  }
+}

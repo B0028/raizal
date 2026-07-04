@@ -6,7 +6,7 @@ import * as React from "react";
 import { buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
-type ThemeToggleVariant = "default" | "outline" | "ghost";
+type ThemeToggleVariant = "default" | "outline" | "ghost" | "outline2";
 type ThemeToggleSize = "default" | "icon" | "lg";
 
 export interface ThemeToggleProps

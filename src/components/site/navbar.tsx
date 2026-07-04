@@ -36,7 +36,7 @@ export function Navbar() {
     <header
       className={cn(
         "sticky top-0 z-50",
-        scrolled ? "bg-background/70 border-b border-border/60 backdrop-blur-xl" : "bg-background/0", 
+        scrolled ? "bg-background/93 border-b border-border/60 backdrop-blur-sm" : "bg-background/0", 
       )}
     >
       <div className="mx-auto grid h-16 grid-cols-[1fr_auto_1fr] items-center px-4 sm:px-6 lg:px-8">
@@ -62,8 +62,10 @@ export function Navbar() {
         <div className="hidden items-center justify-end gap-2 md:flex">
           {user ? (
             <>
-              <ThemeToggle className="cursor-pointer text-muted-foreground" size="lg" />  
-              <Button asChild size="lg" variant="secondary">  
+              <ThemeToggle className="cursor-pointer text-muted-foreground" size="lg" 
+              variant="outline"
+              />  
+              <Button asChild size="lg" variant="outline">  
                 <Link to="/dashboard">
                   <StatusIndicator state="active" size="sm" label="Dashboard"/> 
                 </Link>  
@@ -73,6 +75,7 @@ export function Navbar() {
           ) : (  
             <>
               <ThemeToggle className="cursor-pointer text-muted-foreground" size="lg" 
+              variant="secondary"
               />  
               <Button asChild size="lg" variant="outline">  
                 <Link to="/ingresar">Ingresar</Link>  
