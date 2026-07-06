@@ -109,7 +109,16 @@ export default function AboutPage() {
           </div>
         </div>
       </section>
-      <section className="z-30">
+      <section className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">  
+        <div className="mb-10 text-center">  
+          <span className="text-sm font-semibold text-primary">  
+            Arquitectura  
+          </span>  
+          <h2 className="mt-2 text-3xl font-extrabold tracking-tight text-foreground">  
+            Cómo fluyen nuestras tecnologías  
+          </h2>  
+        </div>  
+    
         <div className="overflow-hidden rounded-3xl border border-border/60">  
           <img  
             src="/tech-stack.svg"  
