@@ -4,7 +4,7 @@ import { CreditCard, Gear, SignOut, User } from '@phosphor-icons/react'
 import { useNavigate } from 'react-router-dom'
 import { useAuth, useUserProfile } from '@/context/AuthContext'
 import { UserAvatar } from '@/components/common/user-avatar'
-import { Button } from "@/components/ui/Button"
+import { Button } from "@/components/ui/button"
 
 export type GlassUserMenuUser = {
   name: string
