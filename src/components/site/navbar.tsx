@@ -50,7 +50,7 @@ export function Navbar() {
               key={link.to}
               to={link.to}
               className={cn(
-                "rounded-md px-3 py-2 text-sm font-medium transition-colors hover:text-foreground",
+                "rounded-md px-3 py-2 text-sm font-semibold transition-colors hover:text-foreground",
                 pathname === link.to ? "text-foreground" : "text-muted-foreground",
               )}
             >
@@ -62,22 +62,22 @@ export function Navbar() {
         <div className="hidden items-center justify-end gap-2 md:flex">
           {user ? (
             <>
-              <ThemeToggle className="cursor-pointer text-muted-foreground" size="lg" 
-              variant="outline"
+              <ThemeToggle className="cursor-pointer glass-strong" size="lg" 
+              variant="secondary"
               />  
-              <Button asChild size="lg" variant="outline">  
+              <Button asChild size="lg" variant="secondary" className="glass-strong">  
                 <Link to="/dashboard">
                   <StatusIndicator state="active" size="sm" label="Dashboard"/> 
                 </Link>  
               </Button>    
               <GlassUserMenu />  
             </> 
-          ) : (  
+          ) : ( 
             <>
-              <ThemeToggle className="cursor-pointer text-muted-foreground" size="lg" 
+              <ThemeToggle className="cursor-pointer glass-strong" size="lg" 
               variant="secondary"
               />  
-              <Button asChild size="lg" variant="outline">  
+              <Button asChild size="lg" variant="secondary" className="glass-strong">  
                 <Link to="/ingresar">Ingresar</Link>  
               </Button>  
               <Button asChild size="lg">  

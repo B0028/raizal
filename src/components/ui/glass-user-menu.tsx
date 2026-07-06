@@ -148,13 +148,12 @@ export default function GlassUserMenu() {
     <div ref={ref} className="relative flex items-center">
       <Button
         size="lg"
-        variant="outline"
+        variant="secondary"
         onClick={() => setOpen((v) => !v)}
         aria-label="User menu"
-        className="flex items-center gap-2 rounded-lg px-3 py-1 transition-colors hover:bg-foreground/10"
-        style={{ boxShadow: open ? '0 0 0 1px rgba(255,255,255,0.25), 0 8px 30px rgba(0,0,0,0.35)' : undefined }}
+        className="flex items-center gap-2 rounded-lg px-3 py-1 transition-colors hover:bg-foreground/10 glass-strong"
       >
-        <div className="pointer-events-none absolute inset-0 z-[-1] rounded-lg glass"/>
+        <div className="pointer-events-none absolute inset-0 z-[-1] rounded-lg"/>
         <UserAvatar
           avatarUrl={profile?.avatar_url}
           username={profile?.username}

@@ -65,24 +65,26 @@ function FaqItem({ q, a }: { q: string; a: string }) {
 
 export default function FaqPage() {
   return (
-    <section className="mx-auto max-w-3xl px-4 py-20 sm:px-6 lg:py-24 lg:px-8">
-      <div className="text-center">
-        <span className="text-sm font-semibold text-primary">
-          Preguntas frecuentes
-        </span>
-        <h1 className="mt-3 text-4xl font-extrabold tracking-tight text-foreground sm:text-5xl">
-          Todo lo que necesitas saber sobre Raizal
-        </h1>
-        <p className="mt-4 text-pretty text-muted-foreground">
-          Resolvemos las dudas más comunes sobre nuestras membresías, cultivos, cosechas y funcionamiento de la plataforma. ¿Tienes otra consulta? Estamos para ayudarte.
-        </p>
-      </div>
+    <>
+      <section className="mx-auto max-w-3xl px-4 py-20 sm:px-6 lg:py-24 lg:px-8">
+        <div className="text-center">
+          <span className="text-sm font-semibold text-primary">
+            Preguntas frecuentes
+          </span>
+          <h1 className="mt-3 text-4xl font-extrabold tracking-tight text-foreground sm:text-5xl">
+            Todo lo que necesitas saber sobre Raizal
+          </h1>
+          <p className="mt-4 text-pretty text-muted-foreground">
+            Resolvemos las dudas más comunes sobre nuestras membresías, cultivos, cosechas y funcionamiento de la plataforma. ¿Tienes otra consulta? Estamos para ayudarte.
+          </p>
+        </div>
 
-      <div className="mt-12 flex flex-col gap-3">
-        {faqs.map((faq) => (
-          <FaqItem key={faq.q} {...faq} />
-        ))}
-      </div>
-    </section>
+        <div className="mt-12 flex flex-col gap-3">
+          {faqs.map((faq) => (
+            <FaqItem key={faq.q} {...faq} />
+          ))}
+        </div>
+      </section>
+    </>
   );
 }

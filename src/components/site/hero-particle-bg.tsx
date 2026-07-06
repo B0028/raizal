@@ -21,8 +21,8 @@ const Z_JITTER = 0.2;
 
 const PLANE_SIZE = 5.0;
 const TARGET_LONG_EDGE = 1600;
-const WORLD_LONG_EDGE = 4;
-const PADDING_PCT = 0.06;
+const WORLD_LONG_EDGE = 5;
+const PADDING_PCT = 0.02;
 
 // ── Shaders ────────────────────────────────────────────────────────────────
 const VERTEX_SHADER = /* glsl */ `
@@ -270,7 +270,7 @@ function Field({ src }: { src: string }) {
   });
 
   return (
-    <group ref={groupRef}>
+    <group ref={groupRef} scale={1.25}>
       <points args={[geometry, material]} />
       <mesh
         onPointerMove={onMove}
@@ -302,7 +302,7 @@ function Scene({ src }: { src: string }) {
   return (
     <Canvas
       dpr={[1, 2]}
-      camera={{ position: [0, 0, 4.5], fov: 38 }}
+      camera={{ position: [0, 0, 4.5], fov: 60 }}
       onCreated={({ camera, gl }) => {
         camera.lookAt(0, 0, 0);
       }}
@@ -316,11 +316,23 @@ function Scene({ src }: { src: string }) {
 
 const LazyScene = React.lazy(() => Promise.resolve({ default: Scene }));
 
+const HERO_IMAGES = [  
+  '/hero/1.png',  
+  '/hero/2.png',  
+  '/hero/3.png',  
+  '/hero/4.png',  
+  '/hero/5.png',  
+  '/hero/6.png',
+];  
+
 export default function HeroParticleBg({
-  src = '/hero-green.png',
-}: { src?: string } = {}) {
+  sources = HERO_IMAGES,
+}: { sources?: string[] } = {}) {
+  const [src] = useState(  
+    () => sources[Math.floor(Math.random() * sources.length)],  
+  );  
   return (
-    <div className="flex w-full h-full bg-transparent">
+    <div className="absolute bg-transparent pointer-events-none flex w-full h-screen bg-transparent">
       <Suspense
         fallback={
           <div className="text-white text-center">

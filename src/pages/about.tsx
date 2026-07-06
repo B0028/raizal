@@ -109,6 +109,15 @@ export default function AboutPage() {
           </div>
         </div>
       </section>
+      <section className="z-30">
+        <div className="overflow-hidden rounded-3xl border border-border/60">  
+          <img  
+            src="/tech-stack.svg"  
+            alt="Arquitectura y flujo de tecnologías de Raizal"  
+            className="h-full w-full object-cover"  
+          />  
+        </div>
+      </section>
     </>
   );
 }
