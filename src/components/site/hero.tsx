@@ -25,8 +25,6 @@ const HERO_TAGS: HeroTag[] = [
 
 const microStats = [
   { value: "+450", label: "Torres activas" },
-  { value: "98%", label: "Pureza de agua" },
-  { value: "0%", label: "Pesticidas" },
 ];
 
   
@@ -67,7 +65,7 @@ export function Hero() {
          ))}  
        </div>
   
-      <div className="relative z-20 mx-auto flex max-w-7xl h-full items-center px-6 sm:px-6 lg:px-8 pointer-events-none mt-16">
+      <div className="relative z-20 mx-auto flex max-w-7xl h-full items-center px-6 sm:px-6 lg:px-8 pointer-events-none mt-16 pb-16">
 
         <motion.div
           initial={{ opacity: 0, y: 24 }}
@@ -87,7 +85,7 @@ export function Hero() {
               <></>  
             ) : (  
               <>  
-                <Button asChild size="lg" className="cursor-pointer px-5 py-6 font-bold shadow-[0_0_40px_-8px_var(--ring)] rounded-xl border-none">  
+                <Button asChild size="lg" className="cursor-pointer px-5 py-6 font-bold shadow-[0_0_40px_-8px_var(--ring)] rounded-xl border-none pointer-events-auto">  
                   <Link to="/registro" className="flex flex-col-2 gap-4 items-center text-md">  
                     Comienza a cultivar 
                     <ArrowRight className="size-5" />  
