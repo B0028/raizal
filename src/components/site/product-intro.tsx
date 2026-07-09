@@ -21,23 +21,6 @@ export function ProductIntro() {
             <b>Tecnología, ecología y comunidad cultivando el futuro.</b>
           </p>
  
-          <dl className="mt-12 pt-6 grid max-w-auto grid-cols-4 gap-6 opacity-80">
-            {[
-              { value: '95%', label: 'Menos agua' },
-              { value: '3x', label: 'Más rápido' },
-              { value: '0%', label: 'Pesticidas' },
-              { value: '100%', label: 'Más ecológico' },
-            ].map((stat) => (
-              <div key={stat.label}>
-                <dt className="text-2xl font-mono font-semibold text-foreground sm:text-3xl">
-                  {stat.value}
-                </dt>
-                <dd className="mt-1 text-xs md:text-md lg:text-lg text-muted-foreground">
-                  {stat.label}
-                </dd>
-              </div>
-            ))}
-          </dl>
         </div>
 
         <div className="relative">

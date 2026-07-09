@@ -24,7 +24,10 @@ const HERO_TAGS: HeroTag[] = [
 ];
 
 const microStats = [
-  { value: "+450", label: "Torres activas" },
+              { value: '95%', label: 'Menos agua' },
+              { value: '3x', label: 'Más rápido' },
+              { value: '0%', label: 'Pesticidas' },
+              { value: '100%', label: 'Más ecológico' },
 ];
 
   

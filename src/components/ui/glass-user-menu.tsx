@@ -29,7 +29,7 @@ const MENU_GROUPS: MenuGroupDef[] = [
     items: [
       { icon: User, label: 'Perfil', color: '#3A86FF', to: '/dashboard/perfil' },
       { icon: Gear, label: 'Ajustes', color: '#B388FF', to: '/ajustes' },
-      { icon: CreditCard, label: 'Membresías', color: '#FFBE0B', to: '/membresias' },
+      { icon: CreditCard, label: 'Membresías', color: '#FFBE0B', to: '/dashboard/membresías' },
     ],
   },
 ]
