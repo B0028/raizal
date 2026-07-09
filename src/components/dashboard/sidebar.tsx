@@ -21,7 +21,7 @@ import { CreditCard, SignOut, User } from '@phosphor-icons/react'
 
 const nav = [  
   { id: 'crops', label: 'Mis cultivos', icon: Sprout, path: '/dashboard/mis-cultivos' },  
-  { id: 'overview', label: 'Resumen', icon: LayoutDashboard, path: '/dashboard' },  
+  { id: 'overview', label: 'Resumen', icon: LayoutDashboard, path: '/dashboard/resumen' },  
   { id: 'sensors', label: 'Sensores', icon: Activity },  
   { id: 'resources', label: 'Recursos', icon: Droplets },  
   { id: 'yield', label: 'Producción', icon: BarChart3 },  
@@ -44,14 +44,14 @@ export function DashboardSidebar() {
   // Mantener resaltado acorde a la ruta
   const activeFromPath = (() => {
     if (pathname.startsWith('/dashboard/')) {
-      const map: Record<string, string> = {  
-        '/dashboard': 'overview',  
-        '/dashboard/mis-cultivos': 'crops',  
-        '/dashboard/perfil': 'profile',  
-        '/dashboard/membresías': 'membership',  
-        '/dashboard/soporte': 'support',  
-        '/dashboard/ajustes': 'settings',  
-      };
+    const map: Record<string, string> = {  
+      '/dashboard/resumen': 'overview',  
+      '/dashboard/mis-cultivos': 'crops',  
+      '/dashboard/perfil': 'profile',  
+      '/dashboard/membresías': 'membership',  
+      '/dashboard/soporte': 'support',  
+      '/dashboard/ajustes': 'settings',  
+    };
       return map[pathname] ?? active;
     }
     return active;
@@ -80,7 +80,6 @@ export function DashboardSidebar() {
         {nav.map((item) => {  
           const Icon = item.icon;  
           const isActive = activeFromPath === item.id;  
-          
           return (  
             <button  
               key={item.id}  

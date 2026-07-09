@@ -56,13 +56,14 @@ export default function AppRoutes() {
             </ProtectedRoute>
           }
         >
-          <Route path="/dashboard" element={<DashboardPage />} />
+          <Route path="/dashboard" element={<Navigate to="/dashboard/mis-cultivos" replace />} />  
           <Route path="/dashboard/perfil" element={<ProfilePage />} />
           <Route path="/dashboard/membresías" element={<DashboardMembershipPage />} />
           <Route path="/dashboard/soporte" element={<DashboardPage />} />
           <Route path="/dashboard/ajustes" element={<DashboardPage />} />
 
           <Route path="/dashboard/mis-cultivos" element={<CropsPage />} />
+          <Route path="/dashboard/resumen" element={<DashboardPage />} />  
         </Route>
 
         <Route path="*" element={<Navigate to="/" replace />} />
@@ -70,4 +71,3 @@ export default function AppRoutes() {
     </>
   );
 }
-
