@@ -18,6 +18,7 @@ import { DashboardPage } from '@/pages/dashboard';
 import { ProfilePage } from '@/pages/profile';
 import { DashboardMembershipPage } from '@/pages/membership';  
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
+import { CropsPage } from '@/pages/crops';  
 
 function ScrollToTop() {
   const { pathname } = useLocation();
@@ -60,6 +61,8 @@ export default function AppRoutes() {
           <Route path="/dashboard/membresías" element={<DashboardMembershipPage />} />
           <Route path="/dashboard/soporte" element={<DashboardPage />} />
           <Route path="/dashboard/ajustes" element={<DashboardPage />} />
+
+          <Route path="/dashboard/mis-cultivos" element={<CropsPage />} />
         </Route>
 
         <Route path="*" element={<Navigate to="/" replace />} />

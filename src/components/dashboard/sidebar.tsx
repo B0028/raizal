@@ -19,12 +19,12 @@ import {
 } from 'lucide-react';
 import { CreditCard, SignOut, User } from '@phosphor-icons/react'
 
-const nav = [
-  { id: 'overview', label: 'Resumen', icon: LayoutDashboard },
-  { id: 'crops', label: 'Mis cultivos', icon: Sprout },
-  { id: 'sensors', label: 'Sensores', icon: Activity },
-  { id: 'resources', label: 'Recursos', icon: Droplets },
-  { id: 'yield', label: 'Producción', icon: BarChart3 },
+const nav = [  
+  { id: 'crops', label: 'Mis cultivos', icon: Sprout, path: '/dashboard/mis-cultivos' },  
+  { id: 'overview', label: 'Resumen', icon: LayoutDashboard, path: '/dashboard' },  
+  { id: 'sensors', label: 'Sensores', icon: Activity },  
+  { id: 'resources', label: 'Recursos', icon: Droplets },  
+  { id: 'yield', label: 'Producción', icon: BarChart3 },  
 ];
 
 const secondary = [
@@ -44,11 +44,13 @@ export function DashboardSidebar() {
   // Mantener resaltado acorde a la ruta
   const activeFromPath = (() => {
     if (pathname.startsWith('/dashboard/')) {
-      const map: Record<string, string> = {
-        '/dashboard/perfil': 'profile',
-        '/dashboard/membresías': 'membership',
-        '/dashboard/soporte': 'support',
-        '/dashboard/ajustes': 'settings',
+      const map: Record<string, string> = {  
+        '/dashboard': 'overview',  
+        '/dashboard/mis-cultivos': 'crops',  
+        '/dashboard/perfil': 'profile',  
+        '/dashboard/membresías': 'membership',  
+        '/dashboard/soporte': 'support',  
+        '/dashboard/ajustes': 'settings',  
       };
       return map[pathname] ?? active;
     }
@@ -75,28 +77,29 @@ export function DashboardSidebar() {
         <p className="px-3 pb-2 font-mono text-[10px] tracking-widest text-muted-foreground">
           PANEL
         </p>
-        {nav.map((item) => {
-          const Icon = item.icon;
-          const isActive = (pathname.startsWith('/dashboard') ? pathname === '/dashboard' : false) ? item.id === 'overview' : activeFromPath === item.id;
-
-          return (
-            <button
-              key={item.id}
-              onClick={() => setActive(item.id)}
-              className={cn(
-                'flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors cursor-pointer',
-                isActive
-                  ? 'bg-primary/15 text-foreground'
-                  : 'text-muted-foreground hover:bg-foreground/5 hover:text-foreground',
-              )}
-            >
-              <Icon className={cn('size-4.5', isActive && 'text-primary')} />
-              {item.label}
-              {isActive && (
-                <span className="ml-auto size-1.5 rounded-full bg-primary" />
-              )}
-            </button>
-          );
+        {nav.map((item) => {  
+          const Icon = item.icon;  
+          const isActive = activeFromPath === item.id;  
+          
+          return (  
+            <button  
+              key={item.id}  
+              onClick={() => {  
+                setActive(item.id);  
+                if ('path' in item && item.path) navigate(item.path);  
+              }}  
+              className={cn(  
+                'flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors cursor-pointer',  
+                isActive  
+                  ? 'bg-primary/15 text-foreground'  
+                  : 'text-muted-foreground hover:bg-foreground/5 hover:text-foreground',  
+              )}  
+            >  
+              <Icon className={cn('size-4.5', isActive && 'text-primary')} />  
+              {item.label}  
+              {isActive && <span className="ml-auto size-1.5 rounded-full bg-primary" />}  
+            </button>  
+          );  
         })}
 
         <p className="mt-6 px-3 pb-2 font-mono text-[10px] tracking-widest text-muted-foreground">
